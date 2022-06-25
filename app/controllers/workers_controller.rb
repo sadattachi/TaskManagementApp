@@ -1,5 +1,5 @@
 class WorkersController < ApplicationController
-  before_action :set_worker, only: %i[show destroy]
+  before_action :set_worker, only: %i[show update destroy activate]
   # before_action :set_worker, only: %i[show edit update destroy]
   def index
     @workers = Worker.all
@@ -16,13 +16,26 @@ class WorkersController < ApplicationController
     end
   end
 
+  def update
+    if @worker.update(worker_update_params)
+      render :show, status: :ok, location: @worker
+    else
+      render json: @worker.errors, status: :unprocessable_entity
+    end
+  end
+
   def destroy
     if @worker.tickets.count > 0
       deletion_error
     else
       @worker.destroy
-      deletion_success
+      success_message('Worker was deleted!')
     end
+  end
+
+  def activate
+    @worker.update(active: true)
+    success_message('Worker is now active!')
   end
 
   private
@@ -35,9 +48,9 @@ class WorkersController < ApplicationController
     render json: payload, status: :conflict
   end
 
-  def deletion_success
+  def success_message(str)
     payload = {
-      message: 'Worker was deleted!',
+      message: str,
       status: 200
     }
     render json: payload, status: :ok
@@ -48,6 +61,10 @@ class WorkersController < ApplicationController
   end
 
   def worker_params
+    params.require(:worker).permit(:last_name, :first_name, :age, :role, :active)
+  end
+
+  def worker_update_params
     params.require(:worker).permit(:last_name, :first_name, :age, :role)
   end
 end
