@@ -18,22 +18,30 @@ class WorkersController < ApplicationController
 
   def destroy
     if @worker.tickets.count > 0
-      payload = {
-        error: "Can't delete worker with tickets!",
-        status: 409
-      }
-      render json: payload, status: :conflict
+      deletion_error
     else
       @worker.destroy
-      payload = {
-        message: 'Worker was deleted!',
-        status: 200
-      }
-      render json: payload, status: :ok
+      deletion_success
     end
   end
 
   private
+
+  def deletion_error
+    payload = {
+      error: "Can't delete worker with tickets!",
+      status: 409
+    }
+    render json: payload, status: :conflict
+  end
+
+  def deletion_success
+    payload = {
+      message: 'Worker was deleted!',
+      status: 200
+    }
+    render json: payload, status: :ok
+  end
 
   def set_worker
     @worker = Worker.find(params[:id])
