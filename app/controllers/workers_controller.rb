@@ -1,5 +1,5 @@
 class WorkersController < ApplicationController
-  before_action :set_worker, only: %i[show]
+  before_action :set_worker, only: %i[show destroy]
   # before_action :set_worker, only: %i[show edit update destroy]
   def index
     @workers = Worker.all
@@ -15,6 +15,23 @@ class WorkersController < ApplicationController
       else
         format.json { render json: @worker.errors, status: :unprocessable_entity }
       end
+    end
+  end
+
+  def destroy
+    if @worker.tickets.count > 0
+      payload = {
+        error: "Can't delete worker with tickets!",
+        status: 409
+      }
+      render json: payload, status: :conflict
+    else
+      @worker.destroy
+      payload = {
+        message: 'Worker was deleted!',
+        status: 200
+      }
+      render json: payload, status: :ok
     end
   end
 
