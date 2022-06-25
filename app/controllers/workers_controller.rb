@@ -1,5 +1,5 @@
 class WorkersController < ApplicationController
-  before_action :set_worker, only: %i[show update destroy activate]
+  before_action :set_worker, only: %i[show update destroy activate deactivate]
   # before_action :set_worker, only: %i[show edit update destroy]
   def index
     @workers = Worker.all
@@ -26,7 +26,7 @@ class WorkersController < ApplicationController
 
   def destroy
     if @worker.tickets.count > 0
-      deletion_error
+      error_message('Can\'t delete worker with tickets!')
     else
       @worker.destroy
       success_message('Worker was deleted!')
@@ -38,11 +38,20 @@ class WorkersController < ApplicationController
     success_message('Worker is now active!')
   end
 
+  def deactivate
+    if @worker.tickets.any? { |t| t.state.in? ['Pending', 'In progress'] }
+      error_message('Can\'t deactivate worker with \'Pending\' or \'In progress\' tickets!')
+    else
+      @worker.update(active: false)
+      success_message('Worker is now inactive!')
+    end
+  end
+
   private
 
-  def deletion_error
+  def error_message(str)
     payload = {
-      error: "Can't delete worker with tickets!",
+      error: str,
       status: 409
     }
     render json: payload, status: :conflict
