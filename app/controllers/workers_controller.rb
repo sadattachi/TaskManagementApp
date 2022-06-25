@@ -9,12 +9,10 @@ class WorkersController < ApplicationController
 
   def create
     @worker = Worker.new(worker_params)
-    respond_to do |format|
-      if @worker.save
-        format.json { render :show, status: :created, location: @worker }
-      else
-        format.json { render json: @worker.errors, status: :unprocessable_entity }
-      end
+    if @worker.save
+      render :show, status: :created, location: @worker
+    else
+      render json: @worker.errors, status: :unprocessable_entity
     end
   end
 
