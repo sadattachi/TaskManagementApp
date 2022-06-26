@@ -50,17 +50,17 @@ class WorkersController < ApplicationController
 
   private
 
-  def error_message(str)
+  def error_message(message)
     payload = {
-      error: str,
+      error: message,
       status: 409
     }
     render json: payload, status: :conflict
   end
 
-  def success_message(str)
+  def success_message(message)
     payload = {
-      message: str,
+      message: message,
       status: 200
     }
     render json: payload, status: :ok
@@ -68,6 +68,8 @@ class WorkersController < ApplicationController
 
   def set_worker
     @worker = Worker.find(params[:id])
+  rescue ActiveRecord::RecordNotFound => e
+    render json: { error: e.message }, status: :bad_request
   end
 
   def worker_params

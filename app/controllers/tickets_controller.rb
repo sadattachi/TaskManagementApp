@@ -37,9 +37,9 @@ class TicketsController < ApplicationController
 
   private
 
-  def success_message(str)
+  def success_message(message)
     payload = {
-      message: str,
+      message: message,
       status: 200
     }
     render json: payload, status: :ok
@@ -47,6 +47,8 @@ class TicketsController < ApplicationController
 
   def set_ticket
     @ticket = Ticket.find(params[:id])
+  rescue ActiveRecord::RecordNotFound => e
+    render json: { error: e.message }, status: :bad_request
   end
 
   def ticket_params
