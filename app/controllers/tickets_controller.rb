@@ -53,6 +53,18 @@ class TicketsController < ApplicationController
     end
   end
 
+  def filter
+    @results = Ticket.all
+    unless params[:state].blank?
+      @results = @results.where('LOWER(state) LIKE :state', state: "%#{params[:state].downcase}%")
+    end
+    @results = @results.where('worker_id = :id', id: params[:worker]) unless params[:worker].blank?
+    if !params[:start_date].blank? && !params[:end_date].blank?
+      @results = @results.where('TO_CHAR(created_at, \'dd.mm.yyyy\') BETWEEN :start AND :end',
+                                start: params[:start_date], end: params[:end_date])
+    end
+  end
+
   private
 
   def success_message(message)
