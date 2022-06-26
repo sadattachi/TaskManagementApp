@@ -27,9 +27,10 @@ class WorkersController < ApplicationController
   def destroy
     if @worker.tickets.count > 0
       error_message('Can\'t delete worker with tickets!')
-    else
-      @worker.destroy
+    elsif @worker.destroy
       success_message('Worker was deleted!')
+    else
+      render json: @worker.errors, status: :unprocessable_entity
     end
   end
 
