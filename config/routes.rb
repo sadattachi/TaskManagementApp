@@ -4,4 +4,6 @@ Rails.application.routes.draw do
   resources :tickets
   put 'workers/:id/activate', to: 'workers#activate'
   put 'workers/:id/deactivate', to: 'workers#deactivate'
+  put 'tickets/:id/change-state', to: 'tickets#change_state'
+  put 'tickets/:id/change-worker', to: 'tickets#change_worker'
 end

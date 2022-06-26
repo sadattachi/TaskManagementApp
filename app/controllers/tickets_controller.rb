@@ -1,5 +1,5 @@
 class TicketsController < ApplicationController
-  before_action :set_ticket, only: %i[show update destroy activate deactivate]
+  before_action :set_ticket, only: %i[show update destroy change_state change_worker]
   def index
     @tickets = Ticket.all
   end
@@ -32,6 +32,22 @@ class TicketsController < ApplicationController
   def destroy
     if @ticket.destroy
       success_message('Ticket was deleted!')
+    else
+      render json: @ticket.errors, status: :unprocessable_entity
+    end
+  end
+
+  def change_state
+    if @ticket.update(params.require(:ticket).permit(:state))
+      render :show, status: :ok, location: @ticket
+    else
+      render json: @ticket.errors, status: :unprocessable_entity
+    end
+  end
+
+  def change_worker
+    if @ticket.update(params.require(:ticket).permit(:worker_id))
+      render :show, status: :ok, location: @ticket
     else
       render json: @ticket.errors, status: :unprocessable_entity
     end
