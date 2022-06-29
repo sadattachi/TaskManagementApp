@@ -74,7 +74,7 @@ class TicketsController < ApplicationController
   def set_ticket
     @ticket = Ticket.find(params[:id])
   rescue ActiveRecord::RecordNotFound => e
-    render json: { error: e.message }, status: :bad_request
+    render json: { error: e.message }, status: :not_found
   end
 
   def ticket_params

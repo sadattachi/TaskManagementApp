@@ -69,7 +69,7 @@ class WorkersController < ApplicationController
   def set_worker
     @worker = Worker.find(params[:id])
   rescue ActiveRecord::RecordNotFound => e
-    render json: { error: e.message }, status: :bad_request
+    render json: { error: e.message }, status: :not_found
   end
 
   def worker_params
