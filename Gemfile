@@ -19,6 +19,8 @@ gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.7'
 
 group :development, :test do
+  gem 'database_cleaner'
+  gem 'rails-controller-testing'
   gem 'rspec-rails', '>= 3.9.0'
 end
 # Use Redis adapter to run Action Cable in production
