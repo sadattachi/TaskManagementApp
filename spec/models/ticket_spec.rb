@@ -4,7 +4,7 @@ RSpec.describe Ticket, type: :model do
   let(:ticket) do
     Ticket.new(title: 'test title',
                description: 'test',
-               worker_id: 2,
+               worker_id: 1,
                state: 'Done')
   end
 
@@ -23,7 +23,7 @@ RSpec.describe Ticket, type: :model do
   end
 
   it 'is not valid if worker_id is not in database' do
-    ticket.worker_id = 1
+    ticket.worker_id = 10
     expect(ticket).to_not be_valid
   end
 
