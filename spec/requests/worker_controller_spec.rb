@@ -34,7 +34,6 @@ RSpec.describe WorkersController, type: :controller do
                          age: 18,
                          role: 'Developer',
                          active: false },
-               as: :json,
                format: :json
              }
       end
@@ -57,7 +56,6 @@ RSpec.describe WorkersController, type: :controller do
                          age: 1,
                          role: '',
                          active: false },
-               as: :json,
                format: :json
              }
       end
@@ -83,7 +81,6 @@ RSpec.describe WorkersController, type: :controller do
                         age: 18,
                         role: 'Developer',
                         active: false },
-              as: :json,
               format: :json
             }
       end
@@ -107,7 +104,6 @@ RSpec.describe WorkersController, type: :controller do
                         age: 1,
                         role: '',
                         active: false },
-              as: :json,
               format: :json
             }
       end
