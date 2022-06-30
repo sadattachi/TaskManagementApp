@@ -26,7 +26,7 @@ class TicketsController < ApplicationController
       render json: { error: "Worker can\'t be unactive!" }, status: :conflict
     end
   rescue StandardError
-    render json: { error: "Worker doesn't exit!" }, status: :bad_request
+    render json: { error: "Worker doesn't exit!" }, status: :not_found
   end
 
   def update
