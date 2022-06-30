@@ -1,6 +1,6 @@
 class WorkersController < ApplicationController
   before_action :set_worker, only: %i[show update destroy activate deactivate]
-  # before_action :set_worker, only: %i[show edit update destroy]
+
   def index
     @workers = Worker.all
   end
