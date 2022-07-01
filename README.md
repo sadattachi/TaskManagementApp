@@ -1,5 +1,33 @@
-## Task Management API
+# Task Management API
 
-API that gives all basic tools for your app
+### Ruby Version 2.7.4
+To install ruby run:
+```
+rvm install "ruby-2.7.4"
+```
 
-Uses: ruby, rails, postgresql
+### Gem Installation
+Install all necessary gems by running:
+```
+bundle install
+```
+
+### Database Setup
+For this API to work you need to create postgres user:
+```
+psql -d postgres -c "CREATE ROLE task_management_app WITH CREATEDB LOGIN PASSWORD 'tmajira';"
+```
+After creating user run:
+```
+rails db:setup --trace
+```
+To initialize database with basic data from `db/seeds.rb` you may want to run:
+```
+rails db:seed
+```
+
+### Unit tests
+API has unit tests. To run this tests:
+```
+rspec
+```
