@@ -1,5 +1,7 @@
 class TicketsController < ApplicationController
   before_action :set_ticket, only: %i[show update destroy change_state change_worker]
+  before_action :set_default_format, only: %i[index show]
+
   def index
     @tickets = Ticket.all
     unless params[:state].blank?
@@ -90,5 +92,9 @@ class TicketsController < ApplicationController
 
   def ticket_update_params
     params.require(:ticket).permit(:title, :description)
+  end
+
+  def set_default_format
+    request.format = 'json'
   end
 end

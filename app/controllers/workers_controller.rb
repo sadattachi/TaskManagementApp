@@ -1,5 +1,6 @@
 class WorkersController < ApplicationController
   before_action :set_worker, only: %i[show update destroy activate deactivate]
+  before_action :set_default_format, only: %i[index show]
 
   def index
     @workers = Worker.all
@@ -78,5 +79,9 @@ class WorkersController < ApplicationController
 
   def worker_update_params
     params.require(:worker).permit(:last_name, :first_name, :age, :role)
+  end
+
+  def set_default_format
+    request.format = 'json'
   end
 end
