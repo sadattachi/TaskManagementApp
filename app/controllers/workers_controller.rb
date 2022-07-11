@@ -1,6 +1,7 @@
 class WorkersController < ApplicationController
   before_action :set_worker, only: %i[show update destroy activate deactivate]
   before_action :set_default_format, only: %i[index show]
+  before_action :authenticate_user!
 
   def index
     @workers = Worker.all
