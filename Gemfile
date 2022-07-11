@@ -24,6 +24,7 @@ gem 'sprockets', '~>3.0'
 
 group :development, :test do
   gem 'database_cleaner'
+  gem 'dotenv-rails', '~> 2.7', '>= 2.7.6'
   gem 'rails-controller-testing'
   gem 'rspec-rails', '>= 3.9.0'
 end
