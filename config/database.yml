@@ -18,7 +18,7 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: tma_dev
+  database: tma_dev1
   host: localhost
   pool: 5
   username: task_management_app
@@ -27,7 +27,7 @@ development:
 test:
   adapter: postgresql
   encoding: unicode
-  database: tma_test
+  database: tma_test1
   host: localhost
   pool: 5
   username: task_management_app
