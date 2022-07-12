@@ -1,8 +1,14 @@
 require 'rails_helper'
+require 'devise/jwt/test_helpers'
 
 RSpec.describe TicketsController, type: :controller do
-  context 'no authentication' do
-    before { allow(controller).to receive(:authenticate_user!).and_return(true) }
+  context 'with valid authentication' do
+    before do
+      user = User.first
+      headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
+      auth_headers = Devise::JWT::TestHelpers.auth_headers(headers, user)
+      request.headers.merge!(auth_headers)
+    end
     describe '#index' do
       before do
         get :index, as: :json
@@ -222,7 +228,7 @@ RSpec.describe TicketsController, type: :controller do
       end
     end
   end
-  context 'with authentification' do
+  context 'without authentification' do
     describe '#index' do
       before { get :index, as: :json }
 
