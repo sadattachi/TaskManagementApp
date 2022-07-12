@@ -80,7 +80,7 @@ RSpec.describe TicketsController, type: :controller do
         end
 
         it { expect(response).to have_http_status(:unprocessable_entity) }
-        it do
+        it 'returns all errors' do
           expect(response.parsed_body.keys)
             .to eq(%w[title state])
         end
@@ -155,6 +155,7 @@ RSpec.describe TicketsController, type: :controller do
         it { expect(response.parsed_body.keys).to eq(%w[state]) }
       end
     end
+
     describe '#change_worker' do
       context 'when valid params are send' do
         before do
@@ -190,7 +191,9 @@ RSpec.describe TicketsController, type: :controller do
     describe '#index' do
       before { get :index, as: :json }
 
-      it { expect(response).to have_http_status(:unauthorized) }
+      context 'when uauthorized' do
+        it { expect(response).to have_http_status(:unauthorized) }
+      end
     end
   end
 end
