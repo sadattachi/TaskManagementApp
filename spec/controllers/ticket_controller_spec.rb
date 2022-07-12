@@ -9,28 +9,24 @@ RSpec.describe TicketsController, type: :controller do
       auth_headers = Devise::JWT::TestHelpers.auth_headers(headers, user)
       request.headers.merge!(auth_headers)
     end
+
     describe '#index' do
       before do
         get :index, as: :json
       end
 
-      it 'returns status code 200' do
-        expect(response).to have_http_status(:ok)
-      end
-
-      it 'renders a proper template' do
-        expect(response).to render_template(:index)
+      context 'when valid' do
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response).to render_template(:index) }
       end
     end
 
     describe '#show' do
       before { get :show, params: { id: 2 }, as: :json }
 
-      it 'returns status code 200' do
-        expect(response).to have_http_status(:ok)
-      end
-      it 'renders a proper template' do
-        expect(response).to render_template(:show)
+      context 'when valid params' do
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response).to render_template(:show) }
       end
     end
 
@@ -46,12 +42,9 @@ RSpec.describe TicketsController, type: :controller do
                  format: :json
                }
         end
-        it 'returns 201 status code' do
-          expect(response).to have_http_status(:created)
-        end
-        it 'renders a proper template' do
-          expect(response).to render_template(:show)
-        end
+
+        it { expect(response).to have_http_status(:created) }
+        it { expect(response).to render_template(:show) }
       end
 
       context 'when ticket worker is unactive' do
@@ -65,12 +58,11 @@ RSpec.describe TicketsController, type: :controller do
                  format: :json
                }
         end
-        it 'returns 409 status code' do
-          expect(response).to have_http_status(:conflict)
-        end
-        it 'returns proper response' do
+
+        it { expect(response).to have_http_status(:conflict) }
+        it do
           expect(response.parsed_body['error'])
-            .to eq("Worker can\'t be unactive!")
+            .to eq("Worker can't be unactive!")
         end
       end
 
@@ -86,10 +78,9 @@ RSpec.describe TicketsController, type: :controller do
                  format: :json
                }
         end
-        it 'returns 422 status code' do
-          expect(response).to have_http_status(:unprocessable_entity)
-        end
-        it 'returns all errors' do
+
+        it { expect(response).to have_http_status(:unprocessable_entity) }
+        it do
           expect(response.parsed_body.keys)
             .to eq(%w[title state])
         end
@@ -110,13 +101,8 @@ RSpec.describe TicketsController, type: :controller do
               }
         end
 
-        it 'returns status code 200' do
-          expect(response).to have_http_status(:ok)
-        end
-
-        it 'renders a proper template' do
-          expect(response).to render_template(:show)
-        end
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response).to render_template(:show) }
       end
 
       context 'when invalid attributes are send' do
@@ -133,56 +119,40 @@ RSpec.describe TicketsController, type: :controller do
               }
         end
 
-        it 'returns 422 status code' do
-          expect(response).to have_http_status(:unprocessable_entity)
-        end
-
-        it 'returns all errors' do
-          expect(response.parsed_body.keys).to eq(%w[title])
-        end
+        it { expect(response).to have_http_status(:unprocessable_entity) }
+        it { expect(response.parsed_body.keys).to eq(%w[title]) }
       end
     end
 
     describe '#destroy' do
       context 'when ticket can be deleted' do
-        before do
-          delete :destroy, params: { id: 1 }
-        end
+        before { delete :destroy, params: { id: 1 } }
 
-        it 'returns status code 200' do
-          expect(response).to have_http_status(:ok)
-        end
-
-        it 'returns proper response' do
-          expect(response.parsed_body['message']).to eq('Ticket was deleted!')
-        end
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response.parsed_body['message']).to eq('Ticket was deleted!') }
       end
     end
 
     describe '#change_state' do
       context 'when valid params are send' do
         before do
-          put :change_state, params: { id: 1, ticket: { state: 'Done' },
+          put :change_state, params: { id: 1,
+                                       ticket: { state: 'Done' },
                                        format: :json }
         end
-        it 'returns status code 200' do
-          expect(response).to have_http_status(:ok)
-        end
-        it 'renders a proper template' do
-          expect(response).to render_template(:show)
-        end
+
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response).to render_template(:show) }
       end
+
       context 'when invalid params are send' do
         before do
           put :change_state, params: { id: 1, ticket: { state: '' },
                                        format: :json }
         end
-        it 'returns status code 422' do
-          expect(response).to have_http_status(:unprocessable_entity)
-        end
-        it 'returns all errors' do
-          expect(response.parsed_body.keys).to eq(%w[state])
-        end
+
+        it { expect(response).to have_http_status(:unprocessable_entity) }
+        it { expect(response.parsed_body.keys).to eq(%w[state]) }
       end
     end
     describe '#change_worker' do
@@ -191,40 +161,28 @@ RSpec.describe TicketsController, type: :controller do
           put :change_worker, params: { id: 1, ticket: { worker_id: 2 },
                                         format: :json }
         end
-        it 'returns status code 200' do
-          expect(response).to have_http_status(:ok)
-        end
-        it 'renders a proper template' do
-          expect(response).to render_template(:show)
-        end
+
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response).to render_template(:show) }
       end
       context 'when worker does not exist' do
         before do
           put :change_worker, params: { id: 1, ticket: { worker_id: 6 },
                                         format: :json }
         end
-        it 'returns status code 404' do
-          expect(response).to have_http_status(:not_found)
-        end
-        it 'returns all errors' do
-          expect(response.parsed_body.keys).to eq(%w[error])
-        end
+
+        it { expect(response).to have_http_status(:not_found) }
+        it { expect(response.parsed_body.keys).to eq(%w[error]) }
       end
       context 'when worker is unactive' do
         before do
           put :change_worker, params: { id: 1, ticket: { worker_id: 4 },
                                         format: :json }
         end
-        it 'returns status code 409' do
-          expect(response).to have_http_status(:conflict)
-        end
 
-        it 'returns all errors' do
-          expect(response.parsed_body.keys).to eq(%w[error])
-        end
-        it 'returns proper response' do
-          expect(response.parsed_body['error']).to eq('Worker can\'t be unactive!')
-        end
+        it { expect(response).to have_http_status(:conflict) }
+        it { expect(response.parsed_body.keys).to eq(%w[error]) }
+        it { expect(response.parsed_body['error']).to eq("Worker can't be unactive!") }
       end
     end
   end
@@ -232,9 +190,7 @@ RSpec.describe TicketsController, type: :controller do
     describe '#index' do
       before { get :index, as: :json }
 
-      it 'returns status code 401' do
-        expect(response).to have_http_status(:unauthorized)
-      end
+      it { expect(response).to have_http_status(:unauthorized) }
     end
   end
 end
