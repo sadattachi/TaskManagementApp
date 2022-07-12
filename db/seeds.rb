@@ -15,4 +15,4 @@ Ticket.create([{ title: 'test', description: 'test', worker: workers[0], state: 
                { title: 'more', description: 'test', worker: workers[1], state: 'In progress' },
                { title: 'some', description: 'test', worker: workers[2], state: 'Done' }])
 
-User.create({ email: 'test@gmail.com', password: 'test' })
+User.create({ email: 'test@gmail.com', password: 'test pass' })
