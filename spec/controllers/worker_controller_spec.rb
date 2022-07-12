@@ -9,26 +9,22 @@ RSpec.describe WorkersController, type: :controller do
       auth_headers = Devise::JWT::TestHelpers.auth_headers(headers, user)
       request.headers.merge!(auth_headers)
     end
+
     describe '#index' do
       before { get :index, as: :json }
 
-      it 'returns status code 200' do
-        expect(response).to have_http_status(:ok)
-      end
-
-      it 'renders a proper template' do
-        expect(response).to render_template(:index)
+      context 'when valid' do
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response).to render_template(:index) }
       end
     end
 
     describe '#show' do
       before { get :show, params: { id: 2 }, as: :json }
 
-      it 'returns status code 200' do
-        expect(response).to have_http_status(:ok)
-      end
-      it 'renders a proper template' do
-        expect(response).to render_template(:show)
+      context 'when valid params' do
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response).to render_template(:show) }
       end
     end
 
@@ -46,13 +42,8 @@ RSpec.describe WorkersController, type: :controller do
                }
         end
 
-        it 'returns 201 status code' do
-          expect(response).to have_http_status(:created)
-        end
-
-        it 'renders a proper template' do
-          expect(response).to render_template(:show)
-        end
+        it { expect(response).to have_http_status(:created) }
+        it { expect(response).to render_template(:show) }
       end
 
       context 'when invalid attributes are send' do
@@ -68,10 +59,7 @@ RSpec.describe WorkersController, type: :controller do
                }
         end
 
-        it 'returns 422 status code' do
-          expect(response).to have_http_status(:unprocessable_entity)
-        end
-
+        it { expect(response).to have_http_status(:unprocessable_entity) }
         it 'returns all errors' do
           expect(response.parsed_body.keys).to eq(%w[last_name first_name age role])
         end
@@ -93,13 +81,8 @@ RSpec.describe WorkersController, type: :controller do
               }
         end
 
-        it 'returns status code 200' do
-          expect(response).to have_http_status(:ok)
-        end
-
-        it 'renders a proper template' do
-          expect(response).to render_template(:show)
-        end
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response).to render_template(:show) }
       end
 
       context 'when invalid attributes are send' do
@@ -116,10 +99,7 @@ RSpec.describe WorkersController, type: :controller do
               }
         end
 
-        it 'returns 422 status code' do
-          expect(response).to have_http_status(:unprocessable_entity)
-        end
-
+        it { expect(response).to have_http_status(:unprocessable_entity) }
         it 'returns all errors' do
           expect(response.parsed_body.keys).to eq(%w[last_name first_name age role])
         end
@@ -132,27 +112,17 @@ RSpec.describe WorkersController, type: :controller do
           delete :destroy, params: { id: 4 }
         end
 
-        it 'returns status code 200' do
-          expect(response).to have_http_status(:ok)
-        end
-
-        it 'returns proper response' do
-          expect(response.parsed_body['message']).to eq('Worker was deleted!')
-        end
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response.parsed_body['message']).to eq('Worker was deleted!') }
       end
 
-      context 'when worker can\'t be deleted' do
+      context "when worker can't be deleted" do
         before do
           delete :destroy, params: { id: 1 }
         end
 
-        it 'returns status code 409' do
-          expect(response).to have_http_status(:conflict)
-        end
-
-        it 'returns proper response' do
-          expect(response.parsed_body['error']).to eq('Can\'t delete worker with tickets!')
-        end
+        it { expect(response).to have_http_status(:conflict) }
+        it { expect(response.parsed_body['error']).to eq('Can\'t delete worker with tickets!') }
       end
     end
 
@@ -161,12 +131,9 @@ RSpec.describe WorkersController, type: :controller do
         put :activate, params: { id: 2 }
       end
 
-      it 'returns status code 200' do
-        expect(response).to have_http_status(:ok)
-      end
-
-      it 'returns proper response' do
-        expect(response.parsed_body['message']).to eq('Worker is now active!')
+      context 'when valid params' do
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response.parsed_body['message']).to eq('Worker is now active!') }
       end
     end
 
@@ -176,25 +143,17 @@ RSpec.describe WorkersController, type: :controller do
           put :deactivate, params: { id: 3 }
         end
 
-        it 'returns status code 200' do
-          expect(response).to have_http_status(:ok)
-        end
-
-        it 'returns proper response' do
-          expect(response.parsed_body['message']).to eq('Worker is now inactive!')
-        end
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response.parsed_body['message']).to eq('Worker is now inactive!') }
       end
 
-      context 'when worker can\'t be deactivated' do
+      context "when worker can't be deactivated" do
         before do
           put :deactivate, params: { id: 1 }
         end
 
-        it 'returns status code 409' do
-          expect(response).to have_http_status(:conflict)
-        end
-
-        it 'returns proper response' do
+        it { expect(response).to have_http_status(:conflict) }
+        it do
           expect(response.parsed_body['error'])
             .to eq('Can\'t deactivate worker with \'Pending\' or \'In progress\' tickets!')
         end
@@ -205,8 +164,8 @@ RSpec.describe WorkersController, type: :controller do
     describe '#index' do
       before { get :index, as: :json }
 
-      it 'returns status code 401' do
-        expect(response).to have_http_status(:unauthorized)
+      context 'when uauthorized' do
+        it { expect(response).to have_http_status(:unauthorized) }
       end
     end
   end
