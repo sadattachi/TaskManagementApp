@@ -12,13 +12,18 @@ RSpec.describe User, type: :model do
     it { expect(user).to_not be_valid }
   end
 
-  context 'when password is empty' do
-    before { user.password = '' }
+  context 'when email is nil' do
+    before { user.email = nil }
     it { expect(user).to_not be_valid }
   end
 
   context 'when invalid email' do
     before { user.email = 'test' }
+    it { expect(user).to_not be_valid }
+  end
+
+  context 'when password is empty' do
+    before { user.password = '' }
     it { expect(user).to_not be_valid }
   end
 
