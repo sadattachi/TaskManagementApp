@@ -1,27 +1,34 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  let(:user) do
-    User.new(email: 'test@email.com',
-             password: 'test pass')
+  let(:user) { FactoryBot.create :user }
+
+  context 'when valid' do
+    it { expect(user).to be_valid }
   end
-  it 'is valid' do
-    expect(user).to be_valid
+
+  context 'when email is empty' do
+    before { user.email = '' }
+    it { expect(user).to_not be_valid }
   end
-  it 'is not valid without email' do
-    user.email = ''
-    expect(user).to_not be_valid
+
+  context 'when password is empty' do
+    before { user.password = '' }
+    it { expect(user).to_not be_valid }
   end
-  it 'is not valid without password' do
-    user.password = ''
-    expect(user).to_not be_valid
+
+  context 'when invalid email' do
+    before { user.email = 'test' }
+    it { expect(user).to_not be_valid }
   end
-  it 'is not valid with invalid email' do
-    user.email = 'test'
-    expect(user).to_not be_valid
+
+  context 'when invalid password' do
+    before { user.password = 'test' }
+    it { expect(user).to_not be_valid }
   end
-  it 'is not valid with invalid password' do
-    user.password = 'test'
-    expect(user).to_not be_valid
+
+  context 'when email is taken' do
+    before { user.email = 'test@gmail.com' }
+    it { expect(user).to_not be_valid }
   end
 end
