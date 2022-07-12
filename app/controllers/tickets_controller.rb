@@ -26,7 +26,7 @@ class TicketsController < ApplicationController
         render json: @ticket.errors, status: :unprocessable_entity
       end
     else
-      render json: { error: "Worker can\'t be unactive!" }, status: :conflict
+      render json: { error: "Worker can't be unactive!" }, status: :conflict
     end
   rescue StandardError
     render json: { error: "Worker doesn't exit!" }, status: :not_found
@@ -65,7 +65,7 @@ class TicketsController < ApplicationController
         render json: @ticket.errors, status: :unprocessable_entity
       end
     else
-      render json: { error: "Worker can\'t be unactive!" }, status: :conflict
+      render json: { error: "Worker can't be unactive!" }, status: :conflict
     end
   rescue ActiveRecord::RecordNotFound => e
     render json: { error: e.message }, status: :not_found
