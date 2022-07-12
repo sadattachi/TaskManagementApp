@@ -14,3 +14,5 @@ workers = Worker.create([{ last_name: 'Tester', first_name: 'Nazar', age: 18, ro
 Ticket.create([{ title: 'test', description: 'test', worker: workers[0], state: 'Pending' },
                { title: 'more', description: 'test', worker: workers[1], state: 'In progress' },
                { title: 'some', description: 'test', worker: workers[2], state: 'Done' }])
+
+User.create({ email: 'test@gmail.com', password: 'test' })
