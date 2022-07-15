@@ -1,7 +1,8 @@
 class TicketsController < ApplicationController
   before_action :set_ticket, only: %i[show update destroy change_state change_worker]
   before_action :set_default_format, only: %i[index show]
-
+  before_action :authenticate_user!
+  
   def index
     @tickets = Ticket.all
     unless params[:state].blank?
@@ -25,7 +26,7 @@ class TicketsController < ApplicationController
         render json: @ticket.errors, status: :unprocessable_entity
       end
     else
-      render json: { error: "Worker can\'t be unactive!" }, status: :conflict
+      render json: { error: "Worker can't be unactive!" }, status: :conflict
     end
   rescue StandardError
     render json: { error: "Worker doesn't exit!" }, status: :not_found
@@ -64,7 +65,7 @@ class TicketsController < ApplicationController
         render json: @ticket.errors, status: :unprocessable_entity
       end
     else
-      render json: { error: "Worker can\'t be unactive!" }, status: :conflict
+      render json: { error: "Worker can't be unactive!" }, status: :conflict
     end
   rescue ActiveRecord::RecordNotFound => e
     render json: { error: e.message }, status: :not_found

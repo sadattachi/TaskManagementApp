@@ -1,6 +1,7 @@
 class WorkersController < ApplicationController
   before_action :set_worker, only: %i[show update destroy activate deactivate]
   before_action :set_default_format, only: %i[index show]
+  before_action :authenticate_user!
 
   def index
     @workers = Worker.all
@@ -27,7 +28,7 @@ class WorkersController < ApplicationController
 
   def destroy
     if @worker.tickets.count > 0
-      error_message('Can\'t delete worker with tickets!')
+      error_message("Can't delete worker with tickets!")
     elsif @worker.destroy
       success_message('Worker was deleted!')
     else
@@ -42,7 +43,7 @@ class WorkersController < ApplicationController
 
   def deactivate
     if @worker.tickets.any? { |t| t.state.in? ['Pending', 'In progress'] }
-      error_message('Can\'t deactivate worker with \'Pending\' or \'In progress\' tickets!')
+      error_message("Can't deactivate worker with 'Pending' or 'In progress' tickets!")
     else
       @worker.update(active: false)
       success_message('Worker is now inactive!')

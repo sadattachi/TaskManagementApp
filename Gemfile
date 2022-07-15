@@ -16,11 +16,16 @@ gem 'webpacker', '~> 5.0'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+gem 'devise', '~> 4.8', '>= 4.8.1'
+gem 'devise-jwt', '~> 0.9.0'
 gem 'jbuilder', '~> 2.7'
+gem 'rack-cors', '~> 1.1', '>= 1.1.1'
 gem 'sprockets', '~>3.0'
 
 group :development, :test do
   gem 'database_cleaner'
+  gem 'dotenv-rails', '~> 2.7', '>= 2.7.6'
+  gem 'factory_bot_rails', '~> 6.2'
   gem 'rails-controller-testing'
   gem 'rspec-rails', '>= 3.9.0'
 end
