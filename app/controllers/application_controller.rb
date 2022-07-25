@@ -5,6 +5,10 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def check_admin_permission!
+    render json: { error: "You don't have permission for this action!" }, status: :forbidden unless current_user.admin?
+  end
+
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[is_admin])
   end
