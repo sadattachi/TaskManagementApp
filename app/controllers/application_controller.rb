@@ -13,6 +13,13 @@ class ApplicationController < ActionController::Base
     render json: { error: "You don't have permission for this action!" }, status: :forbidden unless current_user.admin?
   end
 
+  def check_deactivated
+    unless current_user.worker.active
+      render json: { error: "Deactivated users don't have access to any actions!" },
+             status: :forbidden
+    end
+  end
+
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[is_admin])
   end
