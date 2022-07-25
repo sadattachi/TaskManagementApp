@@ -9,14 +9,14 @@ class WorkersController < ApplicationController
 
   def show; end
 
-  def create
-    @worker = Worker.new(worker_params)
-    if @worker.save
-      render :show, status: :created, location: @worker
-    else
-      render json: @worker.errors, status: :unprocessable_entity
-    end
-  end
+  # def create
+  #   @worker = Worker.new(worker_params)
+  #   if @worker.save
+  #     render :show, status: :created, location: @worker
+  #   else
+  #     render json: @worker.errors, status: :unprocessable_entity
+  #   end
+  # end
 
   def update
     if @worker.update(worker_update_params)
