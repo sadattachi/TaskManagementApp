@@ -5,4 +5,6 @@ class Worker < ApplicationRecord
   validates :age, inclusion: 16..60
   validates :role, inclusion: { in: ['Manager', 'Developer', 'UI/UX Designer'],
                                 message: '%{value} is not a valid role' }
+
+  has_one :user
 end
