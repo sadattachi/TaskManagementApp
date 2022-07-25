@@ -5,6 +5,10 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def auth_user
+    render json: { error: 'You need to log in to continue!' }, status: :unauthorized unless user_signed_in?
+  end
+
   def check_admin_permission!
     render json: { error: "You don't have permission for this action!" }, status: :forbidden unless current_user.admin?
   end
