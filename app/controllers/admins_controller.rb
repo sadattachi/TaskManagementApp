@@ -1,6 +1,6 @@
 class AdminsController < ApplicationController
+  before_action :auth_user
   before_action :set_user
-  before_action :authenticate_user!
   before_action :check_admin_permission!
 
   def assign_admin

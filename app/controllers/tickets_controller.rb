@@ -1,7 +1,7 @@
 class TicketsController < ApplicationController
+  before_action :auth_user
   before_action :set_ticket, only: %i[show update destroy change_state change_worker]
   before_action :set_default_format, only: %i[index show]
-  before_action :authenticate_user!
   
   def index
     @tickets = Ticket.all
