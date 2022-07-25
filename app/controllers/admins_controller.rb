@@ -1,4 +1,5 @@
 class AdminsController < ApplicationController
+  before_action :check_deactivated
   before_action :auth_user
   before_action :set_user
   before_action :check_admin_permission!

@@ -1,8 +1,9 @@
 class TicketsController < ApplicationController
+  before_action :check_deactivated
   before_action :auth_user
   before_action :set_ticket, only: %i[show update destroy change_state change_worker]
   before_action :set_default_format, only: %i[index show]
-  
+
   def index
     @tickets = Ticket.all
     unless params[:state].blank?
