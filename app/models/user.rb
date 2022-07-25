@@ -6,6 +6,10 @@ class User < ApplicationRecord
 
   belongs_to :worker, optional: true
 
+  def admin?
+    is_admin
+  end
+
   def developer?
     worker.role == 'Developer'
   end
