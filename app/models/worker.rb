@@ -1,5 +1,7 @@
 class Worker < ApplicationRecord
   has_many :tickets
+  has_many :created_tickets, foreign_key: :creator_worker_id, class_name: 'Ticket'
+
   validates :last_name, length: { maximum: 20 }
   validates :first_name, length: { maximum: 20 }
   validates :age, inclusion: 16..60
