@@ -4,7 +4,7 @@ class User < ApplicationRecord
          :registerable, :validatable,
          jwt_revocation_strategy: JwtDenylist
 
-  belongs_to :worker
+  belongs_to :worker, optional: true
 
   def developer?
     worker.role == 'Developer'
