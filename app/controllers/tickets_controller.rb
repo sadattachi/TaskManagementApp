@@ -57,10 +57,12 @@ class TicketsController < ApplicationController
   end
 
   def change_state
-    if @ticket.update(params.require(:ticket).permit(:state))
-      render :show, status: :ok, location: @ticket
-    else
-      render json: @ticket.errors, status: :unprocessable_entity
+    if @ticket.worker == current_user.worker || check_admin_or_manager_permission!
+      if @ticket.update(params.require(:ticket).permit(:state))
+        render :show, status: :ok, location: @ticket
+      else
+        render json: @ticket.errors, status: :unprocessable_entity
+      end
     end
   end
 
