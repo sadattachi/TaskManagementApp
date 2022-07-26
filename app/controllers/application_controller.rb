@@ -10,14 +10,31 @@ class ApplicationController < ActionController::Base
   end
 
   def check_admin_permission!
-    render json: { error: "You don't have permission for this action!" }, status: :forbidden unless current_user.admin?
+    unless current_user.admin?
+      forbidden_message("You don't have permission for this action!")
+      return false
+    end
+    true
+  end
+
+  def check_admin_or_manager_permission!
+    if !current_user.admin? && !current_user.manager?
+      forbidden_message("You don't have permission for this action!")
+      return false
+    end
+    true
   end
 
   def check_deactivated
     unless current_user.worker.active
-      render json: { error: "Deactivated users don't have access to any actions!" },
-             status: :forbidden
+      forbidden_message("Deactivated users don't have access to any actions!")
+      return false
     end
+    true
+  end
+
+  def forbidden_message(error)
+    render json: { error: error }, status: :forbidden
   end
 
   def configure_permitted_parameters
