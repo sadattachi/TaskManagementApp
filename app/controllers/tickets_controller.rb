@@ -1,6 +1,6 @@
 class TicketsController < ApplicationController
-  before_action :check_deactivated
   before_action :auth_user
+  before_action :check_deactivated
   before_action :check_admin_or_manager_permission!, only: :destroy
   before_action :set_ticket, only: %i[show update destroy change_state change_worker]
   before_action :set_default_format, only: %i[index show]
@@ -39,10 +39,12 @@ class TicketsController < ApplicationController
   end
 
   def update
-    if @ticket.update(ticket_update_params)
-      render :show, status: :ok, location: @ticket
-    else
-      render json: @ticket.errors, status: :unprocessable_entity
+    if @ticket.creator_worker == current_user.worker || check_admin_or_manager_permission!
+      if @ticket.update(ticket_update_params)
+        render :show, status: :ok, location: @ticket
+      else
+        render json: @ticket.errors, status: :unprocessable_entity
+      end
     end
   end
 
