@@ -5,8 +5,12 @@ class AdminsController < ApplicationController
   before_action :check_admin_permission!
 
   def assign_admin
-    @user.update(is_admin: true)
-    render json: { message: 'User is now admin' }, status: :ok
+    if @user.worker.manager?
+      @user.update(is_admin: true)
+      render json: { message: 'User is now admin' }, status: :ok
+    else
+      render json: { message: 'Only manager can be an admin' }, status: :conflict
+    end
   end
 
   def unassign_admin
