@@ -22,10 +22,12 @@ class WorkersController < ApplicationController
   # end
 
   def update
-    if @worker.update(worker_update_params)
-      render :show, status: :ok, location: @worker
-    else
-      render json: @worker.errors, status: :unprocessable_entity
+    if @worker == current_user.worker || check_admin_or_manager_permission!
+      if @worker.update(worker_update_params)
+        render :show, status: :ok, location: @worker
+      else
+        render json: @worker.errors, status: :unprocessable_entity
+      end
     end
   end
 
