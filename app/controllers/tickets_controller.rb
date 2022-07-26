@@ -67,15 +67,22 @@ class TicketsController < ApplicationController
   end
 
   def change_worker
-    worker = Worker.find(params['ticket']['worker_id'].to_i)
-    if worker.active
-      if @ticket.update(params.require(:ticket).permit(:worker_id))
-        render :show, status: :ok, location: @ticket
+    if @ticket.creator_worker == current_user.worker || check_admin_or_manager_permission!
+      worker = Worker.find(params['ticket']['worker_id'].to_i)
+      if worker.active
+        result = if current_user.manager?
+                   @ticket.update(params.require(:ticket).permit(:worker_id))
+                 else
+                   @ticket.update(worker_id: current_user.worker.id)
+                 end
+        if result
+          render :show, status: :ok, location: @ticket
+        else
+          render json: @ticket.errors, status: :unprocessable_entity
+        end
       else
-        render json: @ticket.errors, status: :unprocessable_entity
+        render json: { error: "Worker can't be unactive!" }, status: :conflict
       end
-    else
-      render json: { error: "Worker can't be unactive!" }, status: :conflict
     end
   rescue ActiveRecord::RecordNotFound => e
     render json: { error: e.message }, status: :not_found
