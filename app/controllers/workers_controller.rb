@@ -2,6 +2,7 @@ class WorkersController < ApplicationController
   before_action :check_deactivated
   before_action :auth_user
   before_action :check_admin_permission!, only: :destroy
+  before_action :check_admin_or_manager_permission!, only: %i[activate deactivate]
   before_action :set_worker, only: %i[show update destroy activate deactivate]
   before_action :set_default_format, only: %i[index show]
 
@@ -44,7 +45,9 @@ class WorkersController < ApplicationController
   end
 
   def deactivate
-    if @worker.tickets.any? { |t| t.state.in? ['Pending', 'In progress'] }
+    if @worker.user.admin?
+      error_message("Can't deactivate admin")
+    elsif @worker.tickets.any? { |t| t.state.in? ['Pending', 'In progress'] }
       error_message("Can't deactivate worker with 'Pending' or 'In progress' tickets!")
     else
       @worker.update(active: false)
