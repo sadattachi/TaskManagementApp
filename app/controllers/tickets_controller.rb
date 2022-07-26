@@ -19,7 +19,11 @@ class TicketsController < ApplicationController
   def show; end
 
   def create
-    @ticket = Ticket.new(ticket_params)
+    @ticket = Ticket.new(title: params[:ticket][:title],
+                         description: params[:ticket][:description],
+                         worker_id: params[:ticket][:worker_id],
+                         state: params[:ticket][:state],
+                         creator_worker_id: current_user.worker.id)
     if @ticket.worker.active
       if @ticket.save
         render :show, status: :created, location: @ticket
