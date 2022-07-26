@@ -1,6 +1,7 @@
 class WorkersController < ApplicationController
   before_action :check_deactivated
   before_action :auth_user
+  before_action :check_admin_permission!, only: :destroy
   before_action :set_worker, only: %i[show update destroy activate deactivate]
   before_action :set_default_format, only: %i[index show]
 
