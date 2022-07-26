@@ -30,44 +30,6 @@ RSpec.describe WorkersController, type: :controller do
       end
     end
 
-    describe '#create' do
-      context 'when valid attributes are send' do
-        before do
-          post :create,
-               params: {
-                 worker: { last_name: 'test',
-                           first_name: 'test',
-                           age: 18,
-                           role: 'Developer',
-                           active: false },
-                 format: :json
-               }
-        end
-
-        it { expect(response).to have_http_status(:created) }
-        it { expect(response).to render_template(:show) }
-      end
-
-      context 'when invalid attributes are send' do
-        before do
-          post :create,
-               params: {
-                 worker: { last_name: 'longer than 20 characters',
-                           first_name: 'longer than 20 characters',
-                           age: 1,
-                           role: '',
-                           active: false },
-                 format: :json
-               }
-        end
-
-        it { expect(response).to have_http_status(:unprocessable_entity) }
-        it 'returns all errors' do
-          expect(response.parsed_body.keys).to eq(%w[last_name first_name age role])
-        end
-      end
-    end
-
     describe '#update' do
       context 'when valid attributes are send' do
         before do
