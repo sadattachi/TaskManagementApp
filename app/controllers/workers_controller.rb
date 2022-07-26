@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class WorkersController < ApplicationController
   before_action :auth_user
   before_action :check_deactivated
@@ -37,7 +39,7 @@ class WorkersController < ApplicationController
   end
 
   def destroy
-    if @worker.tickets.count > 0
+    if @worker.tickets.count.positive?
       error_message("Can't delete worker with tickets!")
     elsif @worker.destroy
       success_message('Worker was deleted!')

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TicketsController < ApplicationController
   before_action :auth_user
   before_action :check_deactivated

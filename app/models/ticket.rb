@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Ticket < ApplicationRecord
   belongs_to :worker
   belongs_to :creator_worker, class_name: 'Worker'
