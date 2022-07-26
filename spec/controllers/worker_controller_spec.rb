@@ -65,7 +65,7 @@ RSpec.describe WorkersController, type: :controller do
 
         it { expect(response).to have_http_status(:unprocessable_entity) }
         it 'returns all errors' do
-          expect(response.parsed_body.keys).to eq(%w[last_name first_name age role])
+          expect(response.parsed_body.keys).to eq(%w[last_name first_name age])
         end
       end
     end
@@ -113,7 +113,7 @@ RSpec.describe WorkersController, type: :controller do
 
       context "when worker can't be deactivated" do
         before do
-          put :deactivate, params: { id: 1 }
+          put :deactivate, params: { id: 2 }
         end
 
         it { expect(response).to have_http_status(:conflict) }
