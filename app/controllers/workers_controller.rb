@@ -23,7 +23,12 @@ class WorkersController < ApplicationController
 
   def update
     if @worker == current_user.worker || check_admin_or_manager_permission!
-      if @worker.update(worker_update_params)
+      result = if current_user.manager?
+                 @worker.update(manager_worker_update_params)
+               else
+                 @worker.update(worker_update_params)
+               end
+      if result
         render :show, status: :ok, location: @worker
       else
         render json: @worker.errors, status: :unprocessable_entity
@@ -85,8 +90,12 @@ class WorkersController < ApplicationController
     params.require(:worker).permit(:last_name, :first_name, :age, :role, :active)
   end
 
-  def worker_update_params
+  def manager_worker_update_params
     params.require(:worker).permit(:last_name, :first_name, :age, :role)
+  end
+
+  def worker_update_params
+    params.require(:worker).permit(:last_name, :first_name, :age)
   end
 
   def set_default_format
