@@ -115,4 +115,38 @@ RSpec.describe 'Admins', type: :request do
       end
     end
   end
+  context 'as guest' do
+    describe 'PUT workers/:id/assign-admin' do
+      context 'when valid attributes' do
+        before do
+          put '/workers/3/assign-admin', as: :json
+        end
+        it { expect(response).to have_http_status(:unauthorized) }
+        it { expect(response.parsed_body['error']).to eq('You need to log in to continue!') }
+      end
+      context 'when invalid attributes' do
+        before do
+          put '/workers/2/assign-admin', as: :json
+        end
+        it { expect(response).to have_http_status(:unauthorized) }
+        it { expect(response.parsed_body['error']).to eq('You need to log in to continue!') }
+      end
+    end
+    describe 'PUT workers/:id/unassign-admin' do
+      context 'when valid attributes' do
+        before do
+          put '/workers/3/unassign-admin', as: :json
+        end
+        it { expect(response).to have_http_status(:unauthorized) }
+        it { expect(response.parsed_body['error']).to eq('You need to log in to continue!') }
+      end
+      context 'when invalid attributes' do
+        before do
+          put '/workers/111/unassign-admin', as: :json
+        end
+        it { expect(response).to have_http_status(:unauthorized) }
+        it { expect(response.parsed_body['error']).to eq('You need to log in to continue!') }
+      end
+    end
+  end
 end
