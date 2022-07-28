@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class AdminsController < ApplicationController
-  before_action :check_deactivated
   before_action :auth_user
+  before_action :check_deactivated
   before_action :check_admin_permission!
   before_action :set_user
 
