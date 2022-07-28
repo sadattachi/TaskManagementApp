@@ -403,7 +403,7 @@ RSpec.describe WorkersController, type: :controller do
     end
     context 'as UI/UX Designer' do
       before do
-        user = User.all[1]
+        user = User.all[3]
         headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
         auth_headers = Devise::JWT::TestHelpers.auth_headers(headers, user)
         request.headers.merge!(auth_headers)
@@ -433,7 +433,7 @@ RSpec.describe WorkersController, type: :controller do
             before do
               put :update,
                   params: {
-                    id: 2,
+                    id: 4,
                     worker: { last_name: 'test',
                               first_name: 'test',
                               age: 18,
@@ -451,7 +451,7 @@ RSpec.describe WorkersController, type: :controller do
             before do
               put :update,
                   params: {
-                    id: 2,
+                    id: 4,
                     worker: { last_name: 'longer than 20 characters',
                               first_name: 'longer than 20 characters',
                               age: 1,
@@ -554,6 +554,23 @@ RSpec.describe WorkersController, type: :controller do
 
           it { expect(response).to have_http_status(:forbidden) }
           it { expect(response.parsed_body['error']).to eq("You don't have permission for this action!") }
+        end
+      end
+    end
+    context 'as deactivated' do
+      before do
+        user = User.all[4]
+        headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
+        auth_headers = Devise::JWT::TestHelpers.auth_headers(headers, user)
+        request.headers.merge!(auth_headers)
+      end
+
+      describe '#index' do
+        before { get :index, as: :json }
+
+        context 'when valid' do
+          it { expect(response).to have_http_status(:forbidden) }
+          it { expect(response.parsed_body['error']).to eq("Deactivated users don't have access to any actions!") }
         end
       end
     end
