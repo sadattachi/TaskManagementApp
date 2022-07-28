@@ -3,11 +3,11 @@
 class AdminsController < ApplicationController
   before_action :check_deactivated
   before_action :auth_user
-  before_action :set_user
   before_action :check_admin_permission!
+  before_action :set_user
 
   def assign_admin
-    if @user.worker.manager?
+    if @user.manager?
       @user.update(is_admin: true)
       render json: { message: 'User is now admin' }, status: :ok
     else
