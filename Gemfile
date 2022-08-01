@@ -21,6 +21,7 @@ gem 'turbolinks', '~> 5'
 gem 'devise', '~> 4.8', '>= 4.8.1'
 gem 'devise-jwt', '~> 0.9.0'
 gem 'jbuilder', '~> 2.7'
+gem 'net-smtp', require: false
 gem 'rack-cors', '~> 1.1', '>= 1.1.1'
 gem 'sprockets', '~>3.0'
 
