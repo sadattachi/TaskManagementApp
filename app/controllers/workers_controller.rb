@@ -14,15 +14,6 @@ class WorkersController < ApplicationController
 
   def show; end
 
-  # def create
-  #   @worker = Worker.new(worker_params)
-  #   if @worker.save
-  #     render :show, status: :created, location: @worker
-  #   else
-  #     render json: @worker.errors, status: :unprocessable_entity
-  #   end
-  # end
-
   def update
     if @worker == current_user.worker || check_admin_or_manager_permission!
       result = if current_user.manager?
