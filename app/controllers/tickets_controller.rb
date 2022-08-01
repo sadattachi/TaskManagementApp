@@ -1,8 +1,12 @@
+# frozen_string_literal: true
+
 class TicketsController < ApplicationController
+  before_action :auth_user
+  before_action :check_deactivated
+  before_action :check_admin_or_manager_permission!, only: :destroy
   before_action :set_ticket, only: %i[show update destroy change_state change_worker]
   before_action :set_default_format, only: %i[index show]
-  before_action :authenticate_user!
-  
+
   def index
     @tickets = Ticket.all
     unless params[:state].blank?
@@ -18,7 +22,11 @@ class TicketsController < ApplicationController
   def show; end
 
   def create
-    @ticket = Ticket.new(ticket_params)
+    @ticket = Ticket.new(title: params[:ticket][:title],
+                         description: params[:ticket][:description],
+                         worker_id: params[:ticket][:worker_id],
+                         state: params[:ticket][:state],
+                         creator_worker_id: current_user.worker.id)
     if @ticket.worker.active
       if @ticket.save
         render :show, status: :created, location: @ticket
@@ -33,10 +41,12 @@ class TicketsController < ApplicationController
   end
 
   def update
-    if @ticket.update(ticket_update_params)
-      render :show, status: :ok, location: @ticket
-    else
-      render json: @ticket.errors, status: :unprocessable_entity
+    if @ticket.creator_worker == current_user.worker || check_admin_or_manager_permission!
+      if @ticket.update(ticket_update_params)
+        render :show, status: :ok, location: @ticket
+      else
+        render json: @ticket.errors, status: :unprocessable_entity
+      end
     end
   end
 
@@ -49,23 +59,32 @@ class TicketsController < ApplicationController
   end
 
   def change_state
-    if @ticket.update(params.require(:ticket).permit(:state))
-      render :show, status: :ok, location: @ticket
-    else
-      render json: @ticket.errors, status: :unprocessable_entity
-    end
-  end
-
-  def change_worker
-    worker = Worker.find(params['ticket']['worker_id'].to_i)
-    if worker.active
-      if @ticket.update(params.require(:ticket).permit(:worker_id))
+    if @ticket.worker == current_user.worker || check_admin_or_manager_permission!
+      if @ticket.update(params.require(:ticket).permit(:state))
         render :show, status: :ok, location: @ticket
       else
         render json: @ticket.errors, status: :unprocessable_entity
       end
-    else
-      render json: { error: "Worker can't be unactive!" }, status: :conflict
+    end
+  end
+
+  def change_worker
+    if @ticket.creator_worker == current_user.worker || check_admin_or_manager_permission!
+      worker = Worker.find(params['ticket']['worker_id'].to_i)
+      if worker.active
+        result = if current_user.manager?
+                   @ticket.update(params.require(:ticket).permit(:worker_id))
+                 else
+                   @ticket.update(worker_id: current_user.worker.id)
+                 end
+        if result
+          render :show, status: :ok, location: @ticket
+        else
+          render json: @ticket.errors, status: :unprocessable_entity
+        end
+      else
+        render json: { error: "Worker can't be unactive!" }, status: :conflict
+      end
     end
   rescue ActiveRecord::RecordNotFound => e
     render json: { error: e.message }, status: :not_found

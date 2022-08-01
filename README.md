@@ -31,3 +31,37 @@ API has unit tests. To run this tests:
 ```
 rspec
 ```
+
+### Requests examples
+
+#### Registration
+```
+Method: POST
+URL: http://127.0.0.1:3000/users
+Example data:
+{
+    "user": {
+        "email": "testreg@gmail.com",
+        "password": "password",
+        "is_admin": "false"},
+
+    "worker": {
+        "last_name": "test", 
+        "first_name": "test", 
+        "age": "20", 
+        "role": "Developer", 
+        "active": "false"}
+}
+```
+
+#### Sign in
+```
+Method: POST
+URL: http://127.0.0.1:3000/users/sign_in
+Example data:
+{
+    "user": {
+        "email": "new@gmail.com",
+        "password": "password"}
+}
+```

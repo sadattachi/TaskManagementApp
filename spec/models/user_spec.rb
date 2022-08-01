@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
@@ -33,7 +35,7 @@ RSpec.describe User, type: :model do
   end
 
   context 'when email is taken' do
-    before { user.email = 'test@gmail.com' }
+    before { user.email = 'nazar@gmail.com' }
     it { expect(user).to_not be_valid }
   end
 end

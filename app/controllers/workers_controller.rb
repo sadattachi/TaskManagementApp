@@ -1,7 +1,12 @@
+# frozen_string_literal: true
+
 class WorkersController < ApplicationController
+  before_action :auth_user
+  before_action :check_deactivated
+  before_action :check_admin_permission!, only: :destroy
+  before_action :check_admin_or_manager_permission!, only: %i[activate deactivate]
   before_action :set_worker, only: %i[show update destroy activate deactivate]
   before_action :set_default_format, only: %i[index show]
-  before_action :authenticate_user!
 
   def index
     @workers = Worker.all
@@ -9,25 +14,23 @@ class WorkersController < ApplicationController
 
   def show; end
 
-  def create
-    @worker = Worker.new(worker_params)
-    if @worker.save
-      render :show, status: :created, location: @worker
-    else
-      render json: @worker.errors, status: :unprocessable_entity
-    end
-  end
-
   def update
-    if @worker.update(worker_update_params)
-      render :show, status: :ok, location: @worker
-    else
-      render json: @worker.errors, status: :unprocessable_entity
+    if @worker == current_user.worker || check_admin_or_manager_permission!
+      result = if current_user.manager?
+                 @worker.update(manager_worker_update_params)
+               else
+                 @worker.update(worker_update_params)
+               end
+      if result
+        render :show, status: :ok, location: @worker
+      else
+        render json: @worker.errors, status: :unprocessable_entity
+      end
     end
   end
 
   def destroy
-    if @worker.tickets.count > 0
+    if @worker.tickets.count.positive?
       error_message("Can't delete worker with tickets!")
     elsif @worker.destroy
       success_message('Worker was deleted!')
@@ -42,7 +45,9 @@ class WorkersController < ApplicationController
   end
 
   def deactivate
-    if @worker.tickets.any? { |t| t.state.in? ['Pending', 'In progress'] }
+    if @worker.user.admin?
+      error_message("Can't deactivate admin")
+    elsif @worker.tickets.any? { |t| t.state.in? ['Pending', 'In progress'] }
       error_message("Can't deactivate worker with 'Pending' or 'In progress' tickets!")
     else
       @worker.update(active: false)
@@ -78,8 +83,12 @@ class WorkersController < ApplicationController
     params.require(:worker).permit(:last_name, :first_name, :age, :role, :active)
   end
 
-  def worker_update_params
+  def manager_worker_update_params
     params.require(:worker).permit(:last_name, :first_name, :age, :role)
+  end
+
+  def worker_update_params
+    params.require(:worker).permit(:last_name, :first_name, :age)
   end
 
   def set_default_format

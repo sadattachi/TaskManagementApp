@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 json.partial! 'workers/worker', worker: @worker
 
 json.tickets @worker.tickets do |ticket|
