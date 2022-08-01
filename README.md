@@ -1,9 +1,9 @@
 # Task Management API
 
-### Ruby Version 2.7.4
+### Ruby Version 3.1.2
 To install ruby run:
 ```
-rvm install "ruby-2.7.4"
+rvm install "ruby-3.1.2"
 ```
 
 ### Gem Installation
