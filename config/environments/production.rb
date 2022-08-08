@@ -114,7 +114,7 @@ Rails.application.configure do
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
 
   config.action_mailer.delivery_method = :smtp
-  host = 'localhost:3000'
+  # host = 'localhost:3000'
   config.action_mailer.default_url_options = { host: 'localhost:3000', protocol: 'http' }
 
   # SMTP settings for gmail
