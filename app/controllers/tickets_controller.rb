@@ -30,6 +30,7 @@ class TicketsController < ApplicationController
     if @ticket.worker.active
       if @ticket.save
         render :show, status: :created, location: @ticket
+        TaskMailer.with(user: User.find(params[:ticket][:worker_id]), ticket: @ticket).new_task_email.deliver_later
       else
         render json: @ticket.errors, status: :unprocessable_entity
       end
