@@ -16,6 +16,7 @@ module Users
     def add_worker_id
       if @user.persisted?
         @user.update(worker_id: @worker.id)
+        RegistrationMailer.with(user: @user).welcome_email.deliver_later
       else
         @worker.destroy
       end
