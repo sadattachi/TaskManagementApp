@@ -79,6 +79,7 @@ class TicketsController < ApplicationController
                    @ticket.update(worker_id: current_user.worker.id)
                  end
         if result
+          TaskMailer.with(user: User.find(params[:ticket][:worker_id]), ticket: @ticket).new_task_email.deliver_later
           render :show, status: :ok, location: @ticket
         else
           render json: @ticket.errors, status: :unprocessable_entity
