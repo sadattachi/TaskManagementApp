@@ -5,7 +5,6 @@ RSpec.describe RegistrationMailer, type: :mailer do
     let(:mail) { RegistrationMailer.with(user: User.first).welcome_email }
 
     it 'renders the headers' do
-      puts mail.body.encoded
       expect(mail.subject).to eq('Welcome to Task Management App!')
       expect(mail.to).to eq(['nazar@gmail.com'])
       expect(mail.from).to eq(['test@example.com'])
