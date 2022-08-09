@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
-  </head>
-  <body>
-    <h1>New task!</h1>
-    <p>Title: <%= @ticket.title%></p>
-    <p>Description: <%= @ticket.description%></p>
-    <p><a href= <%="http://127.0.0.1:3000/tickets/#{@ticket.id}"%>>Link to a ticket</a></p>
-  </body>
-</html>
+<h1>New task!</h1>
+<p>Title: <%= @ticket.title%></p>
+<p>Description: <%= @ticket.description%></p>
+<p><a href= <%="http://127.0.0.1:3000/tickets/#{@ticket.id}"%>>Link to a ticket</a></p>
