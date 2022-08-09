@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>Task changed!</h1>
+    <%if @new_ticket.title != @title%>
+        <p>
+            <span style="color:red">Title: <%= @title%></span> <br>
+            <span style="color:green">Title: <%= @new_ticket.title%></span>
+        </p>
+    <%end%>
+
+    <%if @new_ticket.description != @description%>
+    <p>
+        <span style="color:red">Description: <%= @description%></span> <br>
+        <span style="color:green">Description: <%= @new_ticket.description%></span>
+    </p>
+    <%end%>
+    <p>Updater: <%= @updater.worker.first_name + ' ' + @updater.worker.last_name%></p>
+    <p><a href= <%="http://127.0.0.1:3000/tickets/#{@new_ticket.id}"%>>Link to a ticket</a></p>
+  </body>
+</html>

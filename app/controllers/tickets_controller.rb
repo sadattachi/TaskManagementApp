@@ -43,7 +43,11 @@ class TicketsController < ApplicationController
 
   def update
     if @ticket.creator_worker == current_user.worker || check_admin_or_manager_permission!
+      @title = @ticket.title
+      @description = @ticket.description
       if @ticket.update(ticket_update_params)
+        TaskMailer.with(user: @ticket.worker.user, title: @title, description: @description, new_ticket: @ticket,
+                        updater: current_user).task_changed_email.deliver_later
         render :show, status: :ok, location: @ticket
       else
         render json: @ticket.errors, status: :unprocessable_entity
