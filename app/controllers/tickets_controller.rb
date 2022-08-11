@@ -46,8 +46,10 @@ class TicketsController < ApplicationController
       @title = @ticket.title
       @description = @ticket.description
       if @ticket.update(ticket_update_params)
-        TaskMailer.with(user: @ticket.worker.user, title: @title, description: @description, new_ticket: @ticket,
-                        updater: current_user).task_changed_email.deliver_later
+        if @title != @ticket.title || @description != @ticket.description
+          TaskMailer.with(user: @ticket.worker.user, title: @title, description: @description, new_ticket: @ticket,
+                          updater: current_user).task_changed_email.deliver_later
+        end
         render :show, status: :ok, location: @ticket
       else
         render json: @ticket.errors, status: :unprocessable_entity
