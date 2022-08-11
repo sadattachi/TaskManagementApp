@@ -25,10 +25,9 @@ RSpec.describe TaskMailer, type: :mailer do
   describe 'task changed' do
     let(:mail) do
       @ticket = Ticket.first
-      @title = 'Change title'
-      @description = 'New desc'
-
-      TaskMailer.with(user: User.first, title: @title, description: @description, new_ticket: @ticket,
+      @ticket.title = 'Change title'
+      @ticket.description = 'New desc'
+      TaskMailer.with(user: User.first, changes: @ticket.changes, ticket: @ticket,
                       updater: User.last).task_changed_email
     end
 

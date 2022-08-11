@@ -7,9 +7,8 @@ class TaskMailer < ApplicationMailer
 
   def task_changed_email
     @user = params[:user]
-    @title = params[:title]
-    @description = params[:description]
-    @new_ticket = params[:new_ticket]
+    @changes = params[:changes]
+    @ticket = params[:ticket]
     @updater = params[:updater]
     mail(to: @user.email, subject: 'Task changed!')
   end

@@ -43,11 +43,9 @@ class TicketsController < ApplicationController
 
   def update
     if @ticket.creator_worker == current_user.worker || check_admin_or_manager_permission!
-      @title = @ticket.title
-      @description = @ticket.description
       if @ticket.update(ticket_update_params)
-        if @title != @ticket.title || @description != @ticket.description
-          TaskMailer.with(user: @ticket.worker.user, title: @title, description: @description, new_ticket: @ticket,
+        unless @ticket.previous_changes.nil?
+          TaskMailer.with(user: @ticket.worker.user, changes: @ticket.previous_changes, ticket: @ticket,
                           updater: current_user).task_changed_email.deliver_later
         end
         render :show, status: :ok, location: @ticket

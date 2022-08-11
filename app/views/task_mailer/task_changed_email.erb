@@ -1,16 +1,16 @@
 <h1>Task changed!</h1>
-<%if @new_ticket.title != @title%>
+<%if !@changes['title'].nil?%>
     <p>
-        <span style="color:red">Title: <%= @title%></span> <br>
-        <span style="color:green">Title: <%= @new_ticket.title%></span>
+        <span style="color:red">Title: <%= @changes['title'][0]%></span> <br>
+        <span style="color:green">Title: <%= @changes['title'][1]%></span>
     </p>
 <%end%>
 
-<%if @new_ticket.description != @description%>
+<%if !@changes['description'].nil?%>
 <p>
-    <span style="color:red">Description: <%= @description%></span> <br>
-    <span style="color:green">Description: <%= @new_ticket.description%></span>
+    <span style="color:red">Description: <%= @changes['description'][0] %></span> <br>
+    <span style="color:green">Description: <%= @changes['description'][1]%></span>
 </p>
 <%end%>
 <p>Updater: <%= @updater.worker.first_name + ' ' + @updater.worker.last_name%></p>
-<p><a href= <%="http://127.0.0.1:3000/tickets/#{@new_ticket.id}"%>>Link to a ticket</a></p>
+<p><a href= <%="http://127.0.0.1:3000/tickets/#{@ticket.id}"%>>Link to a ticket</a></p>

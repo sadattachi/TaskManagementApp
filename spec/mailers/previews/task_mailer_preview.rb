@@ -9,10 +9,9 @@ class TaskMailerPreview < ActionMailer::Preview
 
   def task_changed_email
     @ticket = Ticket.first
-    @title = 'Change title'
-    @description = 'New desc'
-
-    TaskMailer.with(user: User.first, title: @title, description: @description, new_ticket: @ticket,
+    @ticket.title = 'New title'
+    @ticket.description = 'New Desc'
+    TaskMailer.with(user: User.first, changes: @ticket.changes, ticket: @ticket,
                     updater: User.last).task_changed_email
   end
 end
