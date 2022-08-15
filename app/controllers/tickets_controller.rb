@@ -30,6 +30,7 @@ class TicketsController < ApplicationController
     if @ticket.worker.active
       if @ticket.save
         render :show, status: :created, location: @ticket
+        TaskMailer.with(user: User.find(params[:ticket][:worker_id]), ticket: @ticket).new_task_email.deliver_later
       else
         render json: @ticket.errors, status: :unprocessable_entity
       end
@@ -43,6 +44,10 @@ class TicketsController < ApplicationController
   def update
     if @ticket.creator_worker == current_user.worker || check_admin_or_manager_permission!
       if @ticket.update(ticket_update_params)
+        unless @ticket.previous_changes.nil?
+          TaskMailer.with(user: @ticket.worker.user, changes: @ticket.previous_changes, ticket: @ticket,
+                          updater: current_user).task_changed_email.deliver_later
+        end
         render :show, status: :ok, location: @ticket
       else
         render json: @ticket.errors, status: :unprocessable_entity
@@ -78,6 +83,7 @@ class TicketsController < ApplicationController
                    @ticket.update(worker_id: current_user.worker.id)
                  end
         if result
+          TaskMailer.with(user: User.find(params[:ticket][:worker_id]), ticket: @ticket).new_task_email.deliver_later
           render :show, status: :ok, location: @ticket
         else
           render json: @ticket.errors, status: :unprocessable_entity
