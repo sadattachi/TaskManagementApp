@@ -6,6 +6,19 @@ class CommentsController < ApplicationController
 
   def show; end
 
+  def create
+    @comment = Comment.new(worker_id: params[:comment][:worker_id],
+                           ticket_id: params[:ticket_id],
+                           message: params[:comment][:message],
+                           reply_to_comment_id: params[:comment][:reply_to_comment_id])
+
+    if @comment.save
+      render :show, status: :created, location: @ticket_comment
+    else
+      render json: @comment.errors, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def set_comment
