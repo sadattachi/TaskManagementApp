@@ -1,4 +1,5 @@
 class CommentsController < ApplicationController
+  before_action :auth_user, only: %i[create update destroy]
   before_action :set_comment, only: %i[show update destroy]
   def index
     @comments = Comment.where(ticket_id: params[:ticket_id].to_i).order(:created_at)
@@ -21,23 +22,35 @@ class CommentsController < ApplicationController
   end
 
   def update
-    if @comment.worker_id == current_user.id
-      if @comment.update(message: params[:comment][:message])
-        render :show, status: :ok, location: @ticket_comment
+    if (Time.zone.now - @comment.created_at) / 3600 < 6
+      if @comment.worker_id == current_user.id
+        if @comment.update(message: params[:comment][:message])
+          render :show, status: :ok, location: @ticket_comment
+        else
+          render json: @comment.errors, status: :unprocessable_entity
+        end
       else
-        render json: @comment.errors, status: :unprocessable_entity
+        forbidden_message('Only author can edit this comment!')
       end
     else
-      forbidden_message('Only author can edit this comment!')
+      render json: { error: 'Messages can only be edited for the first 6 hours!' }
     end
   end
 
   def destroy
-    if @comment.destroy
-      @comment.ticket.update(comments_count: @comment.ticket.comments_count - 1)
-      render json: { message: 'Comment was deleted' }, status: :ok
+    if (Time.zone.now - @comment.created_at) / 3600 < 1
+      if @comment.worker_id == current_user.id
+        if @comment.destroy
+          @comment.ticket.update(comments_count: @comment.ticket.comments_count - 1)
+          render json: { message: 'Comment was deleted' }, status: :ok
+        else
+          render json: @comment.errors, status: :unprocessable_entity
+        end
+      else
+        forbidden_message('Only author can delete this comment!')
+      end
     else
-      render json: @comment.errors, status: :unprocessable_entity
+      render json: { error: 'Messages can only be deleted for the first hour!' }
     end
   end
 
