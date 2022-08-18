@@ -14,6 +14,7 @@ class CommentsController < ApplicationController
                            reply_to_comment_id: params[:comment][:reply_to_comment_id])
 
     if @comment.save
+      email_for_mentions
       @comment.ticket.update(comments_count: @comment.ticket.comments_count + 1)
       render :show, status: :created, location: @ticket_comment
     else
@@ -60,5 +61,9 @@ class CommentsController < ApplicationController
     @comment = Comment.where(ticket_id: params[:ticket_id].to_i).find(params[:id])
   rescue ActiveRecord::RecordNotFound => e
     render json: { error: e.message }, status: :not_found
+  end
+
+  def email_for_mentions
+    name = @comment.message.match(/@[a-zA-Z]+_[a-zA-Z]+/)
   end
 end
