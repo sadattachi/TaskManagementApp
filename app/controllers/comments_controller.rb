@@ -13,6 +13,7 @@ class CommentsController < ApplicationController
                            reply_to_comment_id: params[:comment][:reply_to_comment_id])
 
     if @comment.save
+      @comment.ticket.update(comments_count: @comment.ticket.comments_count + 1)
       render :show, status: :created, location: @ticket_comment
     else
       render json: @comment.errors, status: :unprocessable_entity
@@ -28,6 +29,15 @@ class CommentsController < ApplicationController
       end
     else
       forbidden_message('Only author can edit this comment!')
+    end
+  end
+
+  def destroy
+    if @comment.destroy
+      @comment.ticket.update(comments_count: @comment.ticket.comments_count - 1)
+      render json: { message: 'Comment was deleted' }, status: :ok
+    else
+      render json: @comment.errors, status: :unprocessable_entity
     end
   end
 
