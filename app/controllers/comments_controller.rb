@@ -64,6 +64,18 @@ class CommentsController < ApplicationController
   end
 
   def email_for_mentions
-    name = @comment.message.match(/@[a-zA-Z]+_[a-zA-Z]+/)
+    @name = @comment.message.match(/@[a-zA-Z]+_[a-zA-Z]+/)
+    unless @name.nil?
+      @full_name = @name[0].split('_')
+      @first_name = @full_name[0][1..]
+      @last_name = @full_name[1]
+      @user = Worker.where('lower(first_name) = ? AND lower(last_name) = ?', @first_name.downcase,
+                           @last_name.downcase).first
+      if !@user.nil? && @user.id != @comment.ticket.worker_id && @user.id != @comment.ticket.creator_worker_id
+        CommentsMailer.with(mentioned: @user,
+                            comment: @comment).new_mention.deliver_later
+
+      end
+    end
   end
 end
