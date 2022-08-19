@@ -34,7 +34,7 @@ class CommentsController < ApplicationController
         forbidden_message('Only author can edit this comment!')
       end
     else
-      render json: { error: 'Messages can only be edited for the first 6 hours!' }
+      render json: { error: 'Messages can only be edited for the first 6 hours!' }, status: :forbidden
     end
   end
 
@@ -51,7 +51,7 @@ class CommentsController < ApplicationController
         forbidden_message('Only author can delete this comment!')
       end
     else
-      render json: { error: 'Messages can only be deleted for the first hour!' }
+      render json: { error: 'Messages can only be deleted for the first hour!' }, status: :forbidden
     end
   end
 
