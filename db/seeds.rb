@@ -17,4 +17,8 @@ if Rails.env.test?
   User.create({ email: 'ted@gmail.com', password: 'test pass', worker: workers[2], is_admin: false })
   User.create({ email: 'john@gmail.com', password: 'test pass', worker: workers[3], is_admin: false })
   User.create({ email: 'ben@gmail.com', password: 'test pass', worker: workers[4], is_admin: false })
+
+  Comment.create({ worker_id: 1, ticket_id: 1, message: 'Hiiii!', reply_to_comment_id: nil })
+  Comment.create({ worker_id: 2, ticket_id: 1, message: 'Hi!', reply_to_comment_id: 1 })
+  Comment.create({ worker_id: 3, ticket_id: 1, message: 'Hello!', reply_to_comment_id: 2 })
 end

@@ -7,7 +7,9 @@ Rails.application.routes.draw do
                registrations: 'users/registrations'
              }
   resources :workers
-  resources :tickets
+  resources :tickets do
+    resources :comments
+  end
   put 'workers/:id/activate', to: 'workers#activate'
   put 'workers/:id/deactivate', to: 'workers#deactivate'
   put 'tickets/:id/change-state', to: 'tickets#change_state'
