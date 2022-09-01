@@ -7,7 +7,7 @@ class Ticket < ApplicationRecord
   belongs_to :worker
   belongs_to :creator_worker, class_name: 'Worker'
 
-  has_many :comments
+  has_many :comments, dependent: nil
 
   validates :title, length: { maximum: 40 }
   validates :worker_id, presence: true

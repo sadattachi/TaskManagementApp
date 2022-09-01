@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Users
+  # Manages devise user log in
   class SessionsController < Devise::SessionsController
     respond_to :json
 

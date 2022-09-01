@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Notifies workers about mentions in comments
 class CommentsMailer < ApplicationMailer
   def new_mention
     @mentioned_worker = params[:mentioned]

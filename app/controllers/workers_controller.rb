@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Manages CRUD actions for workers
 class WorkersController < ApplicationController
   before_action :auth_user
   before_action :check_deactivated
@@ -15,17 +16,13 @@ class WorkersController < ApplicationController
   def show; end
 
   def update
-    if @worker == current_user.worker || check_admin_or_manager_permission!
-      result = if current_user.manager?
-                 @worker.update(manager_worker_update_params)
-               else
-                 @worker.update(worker_update_params)
-               end
-      if result
-        render :show, status: :ok, location: @worker
-      else
-        render json: @worker.errors, status: :unprocessable_entity
-      end
+    return unless @worker == current_user.worker || check_admin_or_manager_permission!
+
+    result = update_worker
+    if result
+      render :show, status: :ok, location: @worker
+    else
+      render json: @worker.errors, status: :unprocessable_entity
     end
   end
 
@@ -57,20 +54,12 @@ class WorkersController < ApplicationController
 
   private
 
-  def error_message(message)
-    payload = {
-      error: message,
-      status: 409
-    }
-    render json: payload, status: :conflict
-  end
-
-  def success_message(message)
-    payload = {
-      message: message,
-      status: 200
-    }
-    render json: payload, status: :ok
+  def update_worker
+    if current_user.manager?
+      @worker.update(manager_worker_update_params)
+    else
+      @worker.update(worker_update_params)
+    end
   end
 
   def set_worker

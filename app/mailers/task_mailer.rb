@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Notifies workers about new tasks or changes in existing tasks
 class TaskMailer < ApplicationMailer
   def new_task_email
     @user = params[:user]

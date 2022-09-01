@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Parent controller for all custom controllers
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
   skip_before_action :verify_authenticity_token, if: :json_request?
@@ -37,6 +38,22 @@ class ApplicationController < ActionController::Base
 
   def forbidden_message(error)
     render json: { error: error }, status: :forbidden
+  end
+
+  def success_message(message)
+    payload = {
+      message: message,
+      status: 200
+    }
+    render json: payload, status: :ok
+  end
+
+  def error_message(message)
+    payload = {
+      error: message,
+      status: 409
+    }
+    render json: payload, status: :conflict
   end
 
   def configure_permitted_parameters

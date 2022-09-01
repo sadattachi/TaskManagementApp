@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 require 'devise/jwt/test_helpers'
 
@@ -5,21 +7,21 @@ RSpec.describe 'Comments', type: :request do
   context 'with valid authentication' do
     before { sign_in User.first }
 
-    context 'GET /tickets/1/comments' do
+    context 'when GET /tickets/1/comments' do
       before { get '/tickets/1/comments', as: :json }
 
       it { expect(response).to have_http_status(:ok) }
       it { expect(response).to render_template(:index) }
     end
 
-    context 'GET /tickets/1/comments/1' do
+    context 'when GET /tickets/1/comments/1' do
       before { get '/tickets/1/comments/1', as: :json }
 
       it { expect(response).to have_http_status(:ok) }
       it { expect(response).to render_template(:show) }
     end
 
-    context 'POST /tickets/1/comments' do
+    context 'when POST /tickets/1/comments' do
       before do
         post '/tickets/1/comments',
              params: {
@@ -35,7 +37,7 @@ RSpec.describe 'Comments', type: :request do
       it { expect(Comment.where(message: 'test comment').first.id).to eq(Comment.last.id) }
     end
 
-    context 'PUT /tickets/1/comments' do
+    context 'when PUT /tickets/1/comments' do
       context 'when edited by author' do
         context 'when message is less than 6 hours old' do
           before do
@@ -79,7 +81,7 @@ RSpec.describe 'Comments', type: :request do
       end
     end
 
-    context 'DELETE /tickets/1/comments' do
+    context 'when DELETE /tickets/1/comments' do
       context 'when deleted by author' do
         context 'when message is less than hour old' do
           before { delete '/tickets/1/comments/1', as: :json }
@@ -87,6 +89,7 @@ RSpec.describe 'Comments', type: :request do
           it { expect(response).to have_http_status(:ok) }
           it { expect(response.parsed_body['message']).to eq('Comment was deleted') }
         end
+
         context 'when message is more than hour old' do
           before do
             Comment.first.update(created_at: '2022-08-17 00:00:00')
@@ -106,36 +109,37 @@ RSpec.describe 'Comments', type: :request do
       end
     end
   end
+
   context 'without authentication' do
-    context 'GET /tickets/1/comments' do
+    context 'when GET /tickets/1/comments' do
       before { get '/tickets/1/comments', as: :json }
 
       it { expect(response).to have_http_status(:ok) }
       it { expect(response).to render_template(:index) }
     end
 
-    context 'GET /tickets/1/comments/1' do
+    context 'when GET /tickets/1/comments/1' do
       before { get '/tickets/1/comments/1', as: :json }
 
       it { expect(response).to have_http_status(:ok) }
       it { expect(response).to render_template(:show) }
     end
 
-    context 'POST /tickets/1/comments' do
+    context 'when POST /tickets/1/comments' do
       before { post '/tickets/1/comments', as: :json }
 
       it { expect(response).to have_http_status(:unauthorized) }
       it { expect(response.parsed_body['error']).to eq('You need to log in to continue!') }
     end
 
-    context 'PUT /tickets/1/comments' do
+    context 'when PUT /tickets/1/comments' do
       before { put '/tickets/1/comments/1', as: :json }
 
       it { expect(response).to have_http_status(:unauthorized) }
       it { expect(response.parsed_body['error']).to eq('You need to log in to continue!') }
     end
 
-    context 'DELETE /tickets/1/comments' do
+    context 'when DELETE /tickets/1/comments' do
       before { delete '/tickets/1/comments/1', as: :json }
 
       it { expect(response).to have_http_status(:unauthorized) }

@@ -1,0 +1,28 @@
+require: 
+  - rubocop-rails
+  - rubocop-rspec
+
+AllCops:
+  Exclude:
+    - db/schema.rb
+    - ruby_executable_hooks
+    - bin/*
+  NewCops: disable
+
+Metrics/BlockLength:
+  Exclude:
+    - config/environments/*
+
+Metrics/ClassLength:
+  Max: 120
+  
+RSpec/NestedGroups:
+  Max: 6
+
+Rails/CreateTableWithTimestamps:
+  Exclude:
+    - /**/*/*/20220711092825_create_jwt_denylist.rb
+
+Rails/LexicallyScopedActionFilter:
+  Exclude:
+    - /**/app/controllers/users/*
