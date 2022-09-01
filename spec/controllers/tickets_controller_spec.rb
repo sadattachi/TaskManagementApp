@@ -5,7 +5,7 @@ require 'devise/jwt/test_helpers'
 
 RSpec.describe TicketsController, type: :controller do
   context 'with valid authentication' do
-    context 'as admin' do
+    context 'when admin' do
       before do
         user = User.first
         headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
@@ -63,6 +63,7 @@ RSpec.describe TicketsController, type: :controller do
           end
 
           it { expect(response).to have_http_status(:conflict) }
+
           it do
             expect(response.parsed_body['error'])
               .to eq("Worker can't be unactive!")
@@ -83,6 +84,7 @@ RSpec.describe TicketsController, type: :controller do
           end
 
           it { expect(response).to have_http_status(:unprocessable_entity) }
+
           it 'returns all errors' do
             expect(response.parsed_body.keys)
               .to eq(%w[title state])
@@ -169,6 +171,7 @@ RSpec.describe TicketsController, type: :controller do
           it { expect(response).to have_http_status(:ok) }
           it { expect(response).to render_template(:show) }
         end
+
         context 'when worker does not exist' do
           before do
             put :change_worker, params: { id: 1, ticket: { worker_id: 6 },
@@ -178,6 +181,7 @@ RSpec.describe TicketsController, type: :controller do
           it { expect(response).to have_http_status(:not_found) }
           it { expect(response.parsed_body.keys).to eq(%w[error]) }
         end
+
         context 'when worker is unactive' do
           before do
             put :change_worker, params: { id: 1, ticket: { worker_id: 5 },
@@ -190,7 +194,8 @@ RSpec.describe TicketsController, type: :controller do
         end
       end
     end
-    context 'as manager' do
+
+    context 'when manager' do
       before do
         user = User.all[2]
         headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
@@ -248,6 +253,7 @@ RSpec.describe TicketsController, type: :controller do
           end
 
           it { expect(response).to have_http_status(:conflict) }
+
           it do
             expect(response.parsed_body['error'])
               .to eq("Worker can't be unactive!")
@@ -268,6 +274,7 @@ RSpec.describe TicketsController, type: :controller do
           end
 
           it { expect(response).to have_http_status(:unprocessable_entity) }
+
           it 'returns all errors' do
             expect(response.parsed_body.keys)
               .to eq(%w[title state])
@@ -354,6 +361,7 @@ RSpec.describe TicketsController, type: :controller do
           it { expect(response).to have_http_status(:ok) }
           it { expect(response).to render_template(:show) }
         end
+
         context 'when worker does not exist' do
           before do
             put :change_worker, params: { id: 1, ticket: { worker_id: 6 },
@@ -363,6 +371,7 @@ RSpec.describe TicketsController, type: :controller do
           it { expect(response).to have_http_status(:not_found) }
           it { expect(response.parsed_body.keys).to eq(%w[error]) }
         end
+
         context 'when worker is unactive' do
           before do
             put :change_worker, params: { id: 1, ticket: { worker_id: 5 },
@@ -375,7 +384,8 @@ RSpec.describe TicketsController, type: :controller do
         end
       end
     end
-    context 'as developer' do
+
+    context 'when developer' do
       before do
         user = User.all[1]
         headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
@@ -433,6 +443,7 @@ RSpec.describe TicketsController, type: :controller do
           end
 
           it { expect(response).to have_http_status(:conflict) }
+
           it do
             expect(response.parsed_body['error'])
               .to eq("Worker can't be unactive!")
@@ -453,6 +464,7 @@ RSpec.describe TicketsController, type: :controller do
           end
 
           it { expect(response).to have_http_status(:unprocessable_entity) }
+
           it 'returns all errors' do
             expect(response.parsed_body.keys)
               .to eq(%w[title state])
@@ -461,7 +473,7 @@ RSpec.describe TicketsController, type: :controller do
       end
 
       describe '#update' do
-        context 'tickets created by this user' do
+        context 'when tickets created by this user' do
           context 'when valid attributes are send' do
             before do
               put :update,
@@ -497,7 +509,8 @@ RSpec.describe TicketsController, type: :controller do
             it { expect(response.parsed_body.keys).to eq(%w[title]) }
           end
         end
-        context 'tickets created by another user' do
+
+        context 'when tickets created by another user' do
           context 'when valid attributes are send' do
             before do
               put :update,
@@ -567,6 +580,7 @@ RSpec.describe TicketsController, type: :controller do
             it { expect(response.parsed_body.keys).to eq(%w[state]) }
           end
         end
+
         context 'when assigned to another user' do
           context 'when valid params are send' do
             before do
@@ -602,6 +616,7 @@ RSpec.describe TicketsController, type: :controller do
             it { expect(response).to have_http_status(:ok) }
             it { expect(response).to render_template(:show) }
           end
+
           context 'when worker does not exist' do
             before do
               put :change_worker, params: { id: 1, ticket: { worker_id: 6 },
@@ -611,6 +626,7 @@ RSpec.describe TicketsController, type: :controller do
             it { expect(response).to have_http_status(:not_found) }
             it { expect(response.parsed_body.keys).to eq(%w[error]) }
           end
+
           context 'when worker is unactive' do
             before do
               put :change_worker, params: { id: 1, ticket: { worker_id: 5 },
@@ -622,6 +638,7 @@ RSpec.describe TicketsController, type: :controller do
             it { expect(response.parsed_body['error']).to eq("Worker can't be unactive!") }
           end
         end
+
         context 'when created by another user' do
           context 'when valid params are send' do
             before do
@@ -632,6 +649,7 @@ RSpec.describe TicketsController, type: :controller do
             it { expect(response).to have_http_status(:forbidden) }
             it { expect(response.parsed_body['error']).to eq("You don't have permission for this action!") }
           end
+
           context 'when worker does not exist' do
             before do
               put :change_worker, params: { id: 2, ticket: { worker_id: 6 },
@@ -641,6 +659,7 @@ RSpec.describe TicketsController, type: :controller do
             it { expect(response).to have_http_status(:forbidden) }
             it { expect(response.parsed_body['error']).to eq("You don't have permission for this action!") }
           end
+
           context 'when worker is unactive' do
             before do
               put :change_worker, params: { id: 2, ticket: { worker_id: 5 },
@@ -653,7 +672,8 @@ RSpec.describe TicketsController, type: :controller do
         end
       end
     end
-    context 'as deactivated' do
+
+    context 'when deactivated' do
       before do
         user = User.all[4]
         headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
@@ -671,6 +691,7 @@ RSpec.describe TicketsController, type: :controller do
       end
     end
   end
+
   context 'without authentification' do
     describe '#index' do
       before { get :index, as: :json }

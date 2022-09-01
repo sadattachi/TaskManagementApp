@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Users
+  # Manages devise user registration
   class RegistrationsController < Devise::RegistrationsController
     respond_to :json
     before_action :create_worker, only: :create

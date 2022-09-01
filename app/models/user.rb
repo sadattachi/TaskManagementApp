@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Devise model to manage users
 class User < ApplicationRecord
   devise :database_authenticatable,
          :jwt_authenticatable,

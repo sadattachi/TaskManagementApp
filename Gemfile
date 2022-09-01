@@ -23,6 +23,8 @@ gem 'devise-jwt', '~> 0.9.0'
 gem 'jbuilder', '~> 2.7'
 gem 'net-smtp', require: false
 gem 'rack-cors', '~> 1.1', '>= 1.1.1'
+gem 'rubocop-rails', '~> 2.15', '>= 2.15.2'
+gem 'rubocop-rspec', '~> 2.12', '>= 2.12.1'
 gem 'sprockets', '~>3.0'
 
 group :development, :test do
@@ -31,6 +33,7 @@ group :development, :test do
   gem 'factory_bot_rails', '~> 6.2'
   gem 'rails-controller-testing'
   gem 'rspec-rails', '>= 3.9.0'
+  gem 'simplecov', '~> 0.12.0'
 end
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'

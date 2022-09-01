@@ -11,26 +11,31 @@ RSpec.describe Worker, type: :model do
 
   context 'when last_name is longer than 20 characters' do
     before { worker.last_name = 'way too long last name for worker' }
-    it { expect(worker).to_not be_valid }
+
+    it { expect(worker).not_to be_valid }
   end
 
   context 'when first_name is longer than 20 characters' do
     before { worker.first_name = 'way too long first name for worker' }
-    it { expect(worker).to_not be_valid }
+
+    it { expect(worker).not_to be_valid }
   end
 
   context 'when age is below 16' do
     before { worker.age = 10 }
-    it { expect(worker).to_not be_valid }
+
+    it { expect(worker).not_to be_valid }
   end
 
   context 'when age is above 60' do
     before { worker.age = 70 }
-    it { expect(worker).to_not be_valid }
+
+    it { expect(worker).not_to be_valid }
   end
 
   context 'when role is not valid' do
     before { worker.role = 'test' }
-    it { expect(worker).to_not be_valid }
+
+    it { expect(worker).not_to be_valid }
   end
 end

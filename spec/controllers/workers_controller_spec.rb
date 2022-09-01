@@ -5,7 +5,7 @@ require 'devise/jwt/test_helpers'
 
 RSpec.describe WorkersController, type: :controller do
   context 'with valid authentication' do
-    context 'as admin' do
+    context 'when admin' do
       before do
         user = User.first
         headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
@@ -65,6 +65,7 @@ RSpec.describe WorkersController, type: :controller do
           end
 
           it { expect(response).to have_http_status(:unprocessable_entity) }
+
           it 'returns all errors' do
             expect(response.parsed_body.keys).to eq(%w[last_name first_name age role])
           end
@@ -118,6 +119,7 @@ RSpec.describe WorkersController, type: :controller do
           end
 
           it { expect(response).to have_http_status(:conflict) }
+
           it do
             expect(response.parsed_body['error'])
               .to eq('Can\'t deactivate worker with \'Pending\' or \'In progress\' tickets!')
@@ -125,7 +127,8 @@ RSpec.describe WorkersController, type: :controller do
         end
       end
     end
-    context 'as manager' do
+
+    context 'when manager' do
       before do
         user = User.all[2]
         headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
@@ -185,6 +188,7 @@ RSpec.describe WorkersController, type: :controller do
           end
 
           it { expect(response).to have_http_status(:unprocessable_entity) }
+
           it 'returns all errors' do
             expect(response.parsed_body.keys).to eq(%w[last_name first_name age role])
           end
@@ -238,6 +242,7 @@ RSpec.describe WorkersController, type: :controller do
           end
 
           it { expect(response).to have_http_status(:conflict) }
+
           it do
             expect(response.parsed_body['error'])
               .to eq('Can\'t deactivate worker with \'Pending\' or \'In progress\' tickets!')
@@ -245,7 +250,8 @@ RSpec.describe WorkersController, type: :controller do
         end
       end
     end
-    context 'as developer' do
+
+    context 'when developer' do
       before do
         user = User.all[1]
         headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
@@ -272,7 +278,7 @@ RSpec.describe WorkersController, type: :controller do
       end
 
       describe '#update' do
-        context 'self' do
+        context 'when self' do
           context 'when valid attributes are send' do
             before do
               put :update,
@@ -306,12 +312,14 @@ RSpec.describe WorkersController, type: :controller do
             end
 
             it { expect(response).to have_http_status(:unprocessable_entity) }
+
             it 'returns all errors' do
               expect(response.parsed_body.keys).to eq(%w[last_name first_name age])
             end
           end
         end
-        context 'other worker' do
+
+        context 'when other worker' do
           context 'when valid attributes are send' do
             before do
               put :update,
@@ -401,7 +409,8 @@ RSpec.describe WorkersController, type: :controller do
         end
       end
     end
-    context 'as UI/UX Designer' do
+
+    context 'when UI/UX Designer' do
       before do
         user = User.all[3]
         headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
@@ -428,7 +437,7 @@ RSpec.describe WorkersController, type: :controller do
       end
 
       describe '#update' do
-        context 'self' do
+        context 'when self' do
           context 'when valid attributes are send' do
             before do
               put :update,
@@ -462,12 +471,14 @@ RSpec.describe WorkersController, type: :controller do
             end
 
             it { expect(response).to have_http_status(:unprocessable_entity) }
+
             it 'returns all errors' do
               expect(response.parsed_body.keys).to eq(%w[last_name first_name age])
             end
           end
         end
-        context 'other worker' do
+
+        context 'when other worker' do
           context 'when valid attributes are send' do
             before do
               put :update,
@@ -557,7 +568,8 @@ RSpec.describe WorkersController, type: :controller do
         end
       end
     end
-    context 'as deactivated' do
+
+    context 'when deactivated' do
       before do
         user = User.all[4]
         headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
