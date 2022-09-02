@@ -26,6 +26,7 @@ gem 'rack-cors', '~> 1.1', '>= 1.1.1'
 gem 'rubocop-rails', '~> 2.15', '>= 2.15.2'
 gem 'rubocop-rspec', '~> 2.12', '>= 2.12.1'
 gem 'sprockets', '~>3.0'
+gem 'state_machines'
 
 group :development, :test do
   gem 'database_cleaner'
