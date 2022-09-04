@@ -23,6 +23,7 @@ gem 'devise-jwt', '~> 0.9.0'
 gem 'jbuilder', '~> 2.7'
 gem 'net-smtp', require: false
 gem 'rack-cors', '~> 1.1', '>= 1.1.1'
+gem 'rails_state_machine'
 gem 'rubocop-rails', '~> 2.15', '>= 2.15.2'
 gem 'rubocop-rspec', '~> 2.12', '>= 2.12.1'
 gem 'sprockets', '~>3.0'

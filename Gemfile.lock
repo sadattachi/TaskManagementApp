@@ -193,6 +193,8 @@ GEM
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.4.3)
       loofah (~> 2.3)
+    rails_state_machine (2.1.1)
+      activerecord
     railties (6.1.6)
       actionpack (= 6.1.6)
       activesupport (= 6.1.6)
@@ -335,6 +337,7 @@ DEPENDENCIES
   rack-mini-profiler (~> 2.0)
   rails (~> 6.1.6)
   rails-controller-testing
+  rails_state_machine
   rspec-rails (>= 3.9.0)
   rubocop-rails (~> 2.15, >= 2.15.2)
   rubocop-rspec (~> 2.12, >= 2.12.1)
