@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   end
   put 'workers/:id/activate', to: 'workers#activate'
   put 'workers/:id/deactivate', to: 'workers#deactivate'
-  put 'tickets/:id/change-state', to: 'tickets#change_state'
+  put 'tickets/:id/get-from-backlog', to: 'tickets#ticket_from_backlog'
   put 'tickets/:id/change-worker', to: 'tickets#change_worker'
 
   put 'workers/:id/assign-admin', to: 'admins#assign_admin'
