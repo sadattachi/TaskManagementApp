@@ -27,7 +27,7 @@ class Ticket < ApplicationRecord
     end
 
     event :start_working do
-      transitions from: %i[pending declined], to: :in_progress
+      transitions from: :pending, to: :in_progress
     end
 
     event :review do
@@ -40,6 +40,10 @@ class Ticket < ApplicationRecord
 
     event :decline do
       transitions from: :waiting_for_accept, to: :declined
+    end
+
+    event :continue_working do
+      transitions from: :declined, to: :in_progress
     end
 
     event :finish do
