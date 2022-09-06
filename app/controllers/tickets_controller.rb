@@ -7,7 +7,8 @@ class TicketsController < ApplicationController
   before_action :check_admin_or_manager_permission!, only: :destroy
   before_action :set_ticket,
                 only: %i[show update destroy ticket_from_backlog
-                         ticket_to_in_progress ticket_to_review change_worker]
+                         ticket_to_in_progress ticket_to_review
+                         accept_ticket change_worker]
   before_action :set_new_ticket, only: %i[create]
   before_action :set_default_format, only: %i[index show]
 
@@ -56,6 +57,8 @@ class TicketsController < ApplicationController
     end
     @ticket.get_from_backlog!
     render :show, status: :ok, location: @ticket
+  rescue StandardError
+    error_message('Impossible state change')
   end
 
   def ticket_to_in_progress
@@ -65,6 +68,8 @@ class TicketsController < ApplicationController
     end
     @ticket.start_working!
     render :show, status: :ok, location: @ticket
+  rescue StandardError
+    error_message('Impossible state change')
   end
 
   def ticket_to_review
@@ -74,6 +79,19 @@ class TicketsController < ApplicationController
     end
     @ticket.review!
     render :show, status: :ok, location: @ticket
+  rescue StandardError
+    error_message('Impossible state change')
+  end
+
+  def accept_ticket
+    unless current_user.manager?
+      error_message('Only managers can change state to Waiting For Accept')
+      return
+    end
+    @ticket.accept!
+    render :show, status: :ok, location: @ticket
+  rescue StandardError
+    error_message('Impossible state change')
   end
 
   def change_worker
