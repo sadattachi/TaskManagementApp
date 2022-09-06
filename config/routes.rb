@@ -15,6 +15,7 @@ Rails.application.routes.draw do
 
   put 'tickets/:id/get-from-backlog', to: 'tickets#ticket_from_backlog'
   put 'tickets/:id/ticket-to-in-progress', to: 'tickets#ticket_to_in_progress'
+  put 'tickets/:id/continue', to: 'tickets#ticket_to_in_progress_after_decline'
   put 'tickets/:id/ticket-to-review', to: 'tickets#ticket_to_review'
   put 'tickets/:id/accept', to: 'tickets#accept_ticket'
   put 'tickets/:id/decline', to: 'tickets#decline_ticket'
