@@ -5,7 +5,9 @@ class TicketsController < ApplicationController
   before_action :auth_user
   before_action :check_deactivated
   before_action :check_admin_or_manager_permission!, only: :destroy
-  before_action :set_ticket, only: %i[show update destroy ticket_from_backlog ticket_to_in_progress change_worker]
+  before_action :set_ticket,
+                only: %i[show update destroy ticket_from_backlog
+                         ticket_to_in_progress ticket_to_review change_worker]
   before_action :set_new_ticket, only: %i[create]
   before_action :set_default_format, only: %i[index show]
 
@@ -61,7 +63,16 @@ class TicketsController < ApplicationController
       error_message('Only developers can change state to In Progress')
       return
     end
-    @ticket.start_working
+    @ticket.start_working!
+    render :show, status: :ok, location: @ticket
+  end
+
+  def ticket_to_review
+    unless current_user.developer?
+      error_message('Only developers can change state to Waiting For Accept')
+      return
+    end
+    @ticket.review!
     render :show, status: :ok, location: @ticket
   end
 
