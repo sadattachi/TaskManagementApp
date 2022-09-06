@@ -8,7 +8,8 @@ class TicketsController < ApplicationController
   before_action :set_ticket,
                 only: %i[show update destroy ticket_from_backlog
                          ticket_to_in_progress ticket_to_review
-                         accept_ticket change_worker]
+                         accept_ticket decline_ticket
+                         finish_ticket change_worker]
   before_action :set_new_ticket, only: %i[create]
   before_action :set_default_format, only: %i[index show]
 
@@ -85,10 +86,32 @@ class TicketsController < ApplicationController
 
   def accept_ticket
     unless current_user.manager?
-      error_message('Only managers can change state to Waiting For Accept')
+      error_message('Only managers can change state to Accepted')
       return
     end
     @ticket.accept!
+    render :show, status: :ok, location: @ticket
+  rescue StandardError
+    error_message('Impossible state change')
+  end
+
+  def decline_ticket
+    unless current_user.manager?
+      error_message('Only managers can change state to Declined')
+      return
+    end
+    @ticket.decline!
+    render :show, status: :ok, location: @ticket
+  rescue StandardError
+    error_message('Impossible state change')
+  end
+
+  def finish_ticket
+    unless current_user.manager?
+      error_message('Only managers can change state to Done')
+      return
+    end
+    @ticket.finish!
     render :show, status: :ok, location: @ticket
   rescue StandardError
     error_message('Impossible state change')
