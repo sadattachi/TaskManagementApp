@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   put 'workers/:id/activate', to: 'workers#activate'
   put 'workers/:id/deactivate', to: 'workers#deactivate'
   put 'tickets/:id/get-from-backlog', to: 'tickets#ticket_from_backlog'
+  put 'tickets/:id/ticket-to-in-progress', to: 'tickets#ticket_to_in_progress'
   put 'tickets/:id/change-worker', to: 'tickets#change_worker'
 
   put 'workers/:id/assign-admin', to: 'admins#assign_admin'
