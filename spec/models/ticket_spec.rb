@@ -29,9 +29,73 @@ RSpec.describe Ticket, type: :model do
     it { expect(ticket).not_to be_valid }
   end
 
-  context 'when state is not valid' do
-    before { ticket.state = 'test' }
+  context 'when getting ticket from backlog' do
+    before do
+      ticket.state = 'backlog'
+      ticket.save
+      ticket.get_from_backlog
+    end
 
-    it { expect(ticket).not_to be_valid }
+    it { expect(ticket.state).to eq('pending') }
+  end
+
+  context 'when starting_working' do
+    before do
+      ticket.state = 'pending'
+      ticket.save
+      ticket.start_working
+    end
+
+    it { expect(ticket.state).to eq('in_progress') }
+  end
+
+  context 'when moving to review' do
+    before do
+      ticket.state = 'in_progress'
+      ticket.save
+      ticket.review
+    end
+
+    it { expect(ticket.state).to eq('waiting_for_accept') }
+  end
+
+  context 'when accepting' do
+    before do
+      ticket.state = 'waiting_for_accept'
+      ticket.save
+      ticket.accept
+    end
+
+    it { expect(ticket.state).to eq('accepted') }
+  end
+
+  context 'when declining' do
+    before do
+      ticket.state = 'waiting_for_accept'
+      ticket.save
+      ticket.decline
+    end
+
+    it { expect(ticket.state).to eq('declined') }
+  end
+
+  context 'when continuing working' do
+    before do
+      ticket.state = 'declined'
+      ticket.save
+      ticket.continue_working
+    end
+
+    it { expect(ticket.state).to eq('in_progress') }
+  end
+
+  context 'when finishing' do
+    before do
+      ticket.state = 'accepted'
+      ticket.save
+      ticket.finish
+    end
+
+    it { expect(ticket.state).to eq('done') }
   end
 end
