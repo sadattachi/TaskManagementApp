@@ -12,7 +12,7 @@ RSpec.describe StateChangeMailer, type: :mailer do
     it { expect(mail.to).to eq(['ted@gmail.com']) }
     it { expect(mail.from).to eq(['test@example.com']) }
 
-    it { expect(mail.body.encoded).to match('Ticket "some" state changed to: done') }
+    it { expect(mail.body.encoded).to match('Ticket "test" state changed to: declined') }
   end
 
   describe 'notify_manager' do
@@ -24,6 +24,6 @@ RSpec.describe StateChangeMailer, type: :mailer do
     it { expect(mail.to).to eq(['ivan@gmail.com']) }
     it { expect(mail.from).to eq(['test@example.com']) }
 
-    it { expect(mail.body.encoded).to match('Ticket "some" is done') }
+    it { expect(mail.body.encoded).to match('Ticket "test" is declined') }
   end
 end
