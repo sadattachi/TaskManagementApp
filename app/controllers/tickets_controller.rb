@@ -91,6 +91,7 @@ class TicketsController < ApplicationController
       return
     end
     @ticket.review!
+    notify_manager_on_state_change
     render :show, status: :ok, location: @ticket
   rescue StandardError
     error_message('Impossible state change')
@@ -175,6 +176,12 @@ class TicketsController < ApplicationController
     return if @ticket.worker_id.nil?
 
     StateChangeMailer.with(ticket: @ticket).notify_worker.deliver_later
+  end
+
+  def notify_manager_on_state_change
+    return if @ticket.creator_worker_id.nil?
+
+    StateChangeMailer.with(ticket: @ticket).notify_manager.deliver_later
   end
 
   def save_ticket

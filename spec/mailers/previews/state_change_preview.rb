@@ -4,4 +4,9 @@ class StateChangePreview < ActionMailer::Preview
     @ticket = Ticket.last
     StateChangeMailer.with(ticket: @ticket).notify_worker
   end
+
+  def notify_manager
+    @ticket = Ticket.last
+    StateChangeMailer.with(ticket: @ticket).notify_manager
+  end
 end
