@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Manages CRUD action for tickets
-class TicketsController < ApplicationController
+class TicketsController < ApplicationController # rubocop:disable Metrics/ClassLength
   before_action :auth_user
   before_action :check_deactivated
   before_action :check_admin_or_manager_permission!, only: :destroy

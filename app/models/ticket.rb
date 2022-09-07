@@ -13,7 +13,7 @@ class Ticket < ApplicationRecord
   validates :title, length: { maximum: 40 }
   validates :worker_id, presence: true
 
-  state_machine do
+  state_machine do # rubocop:disable Metrics/BlockLength
     state :backlog, initial: true
     state :pending
     state :in_progress

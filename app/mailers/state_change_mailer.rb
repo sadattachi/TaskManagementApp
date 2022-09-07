@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Mailer to notify users about ticket state change
 class StateChangeMailer < ApplicationMailer
   def notify_worker
     @ticket = params[:ticket]
