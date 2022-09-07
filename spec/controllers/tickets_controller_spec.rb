@@ -87,7 +87,7 @@ RSpec.describe TicketsController, type: :controller do
 
           it 'returns all errors' do
             expect(response.parsed_body.keys)
-              .to eq(%w[title state])
+              .to eq(%w[title])
           end
         end
       end
@@ -138,27 +138,53 @@ RSpec.describe TicketsController, type: :controller do
         end
       end
 
-      describe '#change_state' do
-        context 'when valid params are send' do
-          before do
-            put :change_state, params: { id: 1,
-                                         ticket: { state: 'Done' },
-                                         format: :json }
-          end
+      describe '#ticket_from_backlog' do
+        before { put :ticket_from_backlog, params: { id: 1 } }
 
-          it { expect(response).to have_http_status(:ok) }
-          it { expect(response).to render_template(:show) }
-        end
+        it { expect(response).to have_http_status(:conflict) }
+        it { expect(response.parsed_body['error']).to eq('Only developers can change state to Pending') }
+      end
 
-        context 'when invalid params are send' do
-          before do
-            put :change_state, params: { id: 1, ticket: { state: '' },
-                                         format: :json }
-          end
+      describe '#ticket_to_in_progress' do
+        before { put :ticket_to_in_progress, params: { id: 1 } }
 
-          it { expect(response).to have_http_status(:unprocessable_entity) }
-          it { expect(response.parsed_body.keys).to eq(%w[state]) }
-        end
+        it { expect(response).to have_http_status(:conflict) }
+        it { expect(response.parsed_body['error']).to eq('Only developers can change state to In Progress') }
+      end
+
+      describe '#ticket_to_in_progress_after_decline' do
+        before { put :ticket_to_in_progress_after_decline, params: { id: 1 } }
+
+        it { expect(response).to have_http_status(:conflict) }
+        it { expect(response.parsed_body['error']).to eq('Only developers can change state to In Progress') }
+      end
+
+      describe '#ticket_to_review' do
+        before { put :ticket_to_review, params: { id: 1 } }
+
+        it { expect(response).to have_http_status(:conflict) }
+        it { expect(response.parsed_body['error']).to eq('Only developers can change state to Waiting For Accept') }
+      end
+
+      describe '#accept_ticket' do
+        before { put :accept_ticket, params: { id: 4 } }
+
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response).to render_template(:show) }
+      end
+
+      describe '#decline_ticket' do
+        before { put :decline_ticket, params: { id: 4 } }
+
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response).to render_template(:show) }
+      end
+
+      describe '#finish_ticket' do
+        before { put :finish_ticket, params: { id: 5 } }
+
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response).to render_template(:show) }
       end
 
       describe '#change_worker' do
@@ -277,7 +303,7 @@ RSpec.describe TicketsController, type: :controller do
 
           it 'returns all errors' do
             expect(response.parsed_body.keys)
-              .to eq(%w[title state])
+              .to eq(%w[title])
           end
         end
       end
@@ -328,27 +354,53 @@ RSpec.describe TicketsController, type: :controller do
         end
       end
 
-      describe '#change_state' do
-        context 'when valid params are send' do
-          before do
-            put :change_state, params: { id: 1,
-                                         ticket: { state: 'Done' },
-                                         format: :json }
-          end
+      describe '#ticket_from_backlog' do
+        before { put :ticket_from_backlog, params: { id: 1 } }
 
-          it { expect(response).to have_http_status(:ok) }
-          it { expect(response).to render_template(:show) }
-        end
+        it { expect(response).to have_http_status(:conflict) }
+        it { expect(response.parsed_body['error']).to eq('Only developers can change state to Pending') }
+      end
 
-        context 'when invalid params are send' do
-          before do
-            put :change_state, params: { id: 1, ticket: { state: '' },
-                                         format: :json }
-          end
+      describe '#ticket_to_in_progress' do
+        before { put :ticket_to_in_progress, params: { id: 1 } }
 
-          it { expect(response).to have_http_status(:unprocessable_entity) }
-          it { expect(response.parsed_body.keys).to eq(%w[state]) }
-        end
+        it { expect(response).to have_http_status(:conflict) }
+        it { expect(response.parsed_body['error']).to eq('Only developers can change state to In Progress') }
+      end
+
+      describe '#ticket_to_in_progress_after_decline' do
+        before { put :ticket_to_in_progress_after_decline, params: { id: 1 } }
+
+        it { expect(response).to have_http_status(:conflict) }
+        it { expect(response.parsed_body['error']).to eq('Only developers can change state to In Progress') }
+      end
+
+      describe '#ticket_to_review' do
+        before { put :ticket_to_review, params: { id: 1 } }
+
+        it { expect(response).to have_http_status(:conflict) }
+        it { expect(response.parsed_body['error']).to eq('Only developers can change state to Waiting For Accept') }
+      end
+
+      describe '#accept_ticket' do
+        before { put :accept_ticket, params: { id: 4 } }
+
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response).to render_template(:show) }
+      end
+
+      describe '#decline_ticket' do
+        before { put :decline_ticket, params: { id: 4 } }
+
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response).to render_template(:show) }
+      end
+
+      describe '#finish_ticket' do
+        before { put :finish_ticket, params: { id: 5 } }
+
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response).to render_template(:show) }
       end
 
       describe '#change_worker' do
@@ -467,7 +519,7 @@ RSpec.describe TicketsController, type: :controller do
 
           it 'returns all errors' do
             expect(response.parsed_body.keys)
-              .to eq(%w[title state])
+              .to eq(%w[title])
           end
         end
       end
@@ -557,52 +609,53 @@ RSpec.describe TicketsController, type: :controller do
         end
       end
 
-      describe '#change_state' do
-        context 'when assigned to this user' do
-          context 'when valid params are send' do
-            before do
-              put :change_state, params: { id: 2,
-                                           ticket: { state: 'Done' },
-                                           format: :json }
-            end
+      describe '#ticket_from_backlog' do
+        before { put :ticket_from_backlog, params: { id: 1 } }
 
-            it { expect(response).to have_http_status(:ok) }
-            it { expect(response).to render_template(:show) }
-          end
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response).to render_template(:show) }
+      end
 
-          context 'when invalid params are send' do
-            before do
-              put :change_state, params: { id: 2, ticket: { state: '' },
-                                           format: :json }
-            end
+      describe '#ticket_to_in_progress' do
+        before { put :ticket_to_in_progress, params: { id: 6 } }
 
-            it { expect(response).to have_http_status(:unprocessable_entity) }
-            it { expect(response.parsed_body.keys).to eq(%w[state]) }
-          end
-        end
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response).to render_template(:show) }
+      end
 
-        context 'when assigned to another user' do
-          context 'when valid params are send' do
-            before do
-              put :change_state, params: { id: 1,
-                                           ticket: { state: 'Done' },
-                                           format: :json }
-            end
+      describe '#ticket_to_in_progress_after_decline' do
+        before { put :ticket_to_in_progress_after_decline, params: { id: 7 } }
 
-            it { expect(response).to have_http_status(:forbidden) }
-            it { expect(response.parsed_body['error']).to eq("You don't have permission for this action!") }
-          end
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response).to render_template(:show) }
+      end
 
-          context 'when invalid params are send' do
-            before do
-              put :change_state, params: { id: 1, ticket: { state: '' },
-                                           format: :json }
-            end
+      describe '#ticket_to_review' do
+        before { put :ticket_to_review, params: { id: 2 } }
 
-            it { expect(response).to have_http_status(:forbidden) }
-            it { expect(response.parsed_body['error']).to eq("You don't have permission for this action!") }
-          end
-        end
+        it { expect(response).to have_http_status(:ok) }
+        it { expect(response).to render_template(:show) }
+      end
+
+      describe '#accept_ticket' do
+        before { put :accept_ticket, params: { id: 4 } }
+
+        it { expect(response).to have_http_status(:conflict) }
+        it { expect(response.parsed_body['error']).to eq('Only managers can change state to Accepted') }
+      end
+
+      describe '#decline_ticket' do
+        before { put :decline_ticket, params: { id: 4 } }
+
+        it { expect(response).to have_http_status(:conflict) }
+        it { expect(response.parsed_body['error']).to eq('Only managers can change state to Declined') }
+      end
+
+      describe '#finish_ticket' do
+        before { put :finish_ticket, params: { id: 5 } }
+
+        it { expect(response).to have_http_status(:conflict) }
+        it { expect(response.parsed_body['error']).to eq('Only managers can change state to Done') }
       end
 
       describe '#change_worker' do
