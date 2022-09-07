@@ -12,6 +12,14 @@ if Rails.env.test?
                  { title: 'more', description: 'test', worker: workers[1], state: 'in_progress',
                    creator_worker: workers[2] },
                  { title: 'some', description: 'test', worker: workers[2], state: 'done',
+                   creator_worker: workers[1] },
+                 { title: 'test', description: 'ticket', worker: workers[1], state: 'waiting_for_accept',
+                   creator_worker: workers[1] },
+                 { title: 'test', description: 'finish', worker: workers[1], state: 'accepted',
+                   creator_worker: workers[1] },
+                 { title: 'test', description: 'pending', worker: workers[1], state: 'pending',
+                   creator_worker: workers[1] },
+                 { title: 'test', description: 'declined', worker: workers[2], state: 'declined',
                    creator_worker: workers[1] }])
 
   User.create({ email: 'nazar@gmail.com', password: 'test pass', worker: workers[0], is_admin: true })
