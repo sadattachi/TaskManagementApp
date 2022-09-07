@@ -68,6 +68,7 @@ class TicketsController < ApplicationController
       return
     end
     @ticket.start_working!
+    notify_worker_on_state_change
     render :show, status: :ok, location: @ticket
   rescue StandardError
     error_message('Impossible state change')
@@ -101,6 +102,7 @@ class TicketsController < ApplicationController
       return
     end
     @ticket.accept!
+    notify_worker_on_state_change
     render :show, status: :ok, location: @ticket
   rescue StandardError
     error_message('Impossible state change')
@@ -112,6 +114,7 @@ class TicketsController < ApplicationController
       return
     end
     @ticket.decline!
+    notify_worker_on_state_change
     render :show, status: :ok, location: @ticket
   rescue StandardError
     error_message('Impossible state change')
@@ -123,6 +126,7 @@ class TicketsController < ApplicationController
       return
     end
     @ticket.finish!
+    notify_worker_on_state_change
     render :show, status: :ok, location: @ticket
   rescue StandardError
     error_message('Impossible state change')
@@ -167,10 +171,16 @@ class TicketsController < ApplicationController
                     updater: current_user).task_changed_email.deliver_later
   end
 
+  def notify_worker_on_state_change
+    return if @ticket.worker_id.nil?
+
+    StateChangeMailer.with(ticket: @ticket).notify_worker.deliver_later
+  end
+
   def save_ticket
     if @ticket.save
       render :show, status: :created, location: @ticket
-      # TaskMailer.with(user: User.find(params[:ticket][:worker_id]), ticket: @ticket).new_task_email.deliver_later
+      TaskMailer.with(user: User.find(params[:ticket][:worker_id]), ticket: @ticket).new_task_email.deliver_later
     else
       render json: @ticket.errors, status: :unprocessable_entity
     end
