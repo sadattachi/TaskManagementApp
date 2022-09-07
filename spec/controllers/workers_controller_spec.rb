@@ -122,7 +122,7 @@ RSpec.describe WorkersController, type: :controller do
 
           it do
             expect(response.parsed_body['error'])
-              .to eq('Can\'t deactivate worker with \'Pending\' or \'In progress\' tickets!')
+              .to eq('Can\'t deactivate worker with \'pending\' or \'in_progress\' tickets!')
           end
         end
       end
@@ -245,7 +245,7 @@ RSpec.describe WorkersController, type: :controller do
 
           it do
             expect(response.parsed_body['error'])
-              .to eq('Can\'t deactivate worker with \'Pending\' or \'In progress\' tickets!')
+              .to eq('Can\'t deactivate worker with \'pending\' or \'in_progress\' tickets!')
           end
         end
       end

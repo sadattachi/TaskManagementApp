@@ -44,8 +44,8 @@ class WorkersController < ApplicationController
   def deactivate
     if @worker.user.admin?
       error_message("Can't deactivate admin")
-    elsif @worker.tickets.any? { |t| t.state.in? ['Pending', 'In progress'] }
-      error_message("Can't deactivate worker with 'Pending' or 'In progress' tickets!")
+    elsif @worker.tickets.any? { |t| t.state.in? %w[pending in_progress] }
+      error_message("Can't deactivate worker with 'pending' or 'in_progress' tickets!")
     else
       @worker.update(active: false)
       success_message('Worker is now inactive!')
