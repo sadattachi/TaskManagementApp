@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
 # Manages CRUD action for tickets
-class TicketsController < ApplicationController
+class TicketsController < ApplicationController # rubocop:disable Metrics/ClassLength
   before_action :auth_user
   before_action :check_deactivated
   before_action :check_admin_or_manager_permission!, only: :destroy
-  before_action :set_ticket, only: %i[show update destroy change_state change_worker]
+  before_action :set_ticket,
+                only: %i[show update destroy ticket_from_backlog
+                         ticket_to_in_progress ticket_to_in_progress_after_decline
+                         ticket_to_review accept_ticket decline_ticket
+                         finish_ticket change_worker]
   before_action :set_new_ticket, only: %i[create]
   before_action :set_default_format, only: %i[index show]
 
@@ -47,14 +51,86 @@ class TicketsController < ApplicationController
     end
   end
 
-  def change_state
-    return unless @ticket.worker == current_user.worker || check_admin_or_manager_permission!
-
-    if @ticket.update(params.require(:ticket).permit(:state))
-      render :show, status: :ok, location: @ticket
-    else
-      render json: @ticket.errors, status: :unprocessable_entity
+  def ticket_from_backlog
+    unless current_user.developer?
+      error_message('Only developers can change state to Pending')
+      return
     end
+    @ticket.get_from_backlog!
+    render :show, status: :ok, location: @ticket
+  rescue StandardError
+    error_message('Impossible state change')
+  end
+
+  def ticket_to_in_progress
+    unless current_user.developer?
+      error_message('Only developers can change state to In Progress')
+      return
+    end
+    @ticket.start_working!
+    notify_worker_on_state_change
+    render :show, status: :ok, location: @ticket
+  rescue StandardError
+    error_message('Impossible state change')
+  end
+
+  def ticket_to_in_progress_after_decline
+    unless current_user.developer?
+      error_message('Only developers can change state to In Progress')
+      return
+    end
+    @ticket.continue_working!
+    render :show, status: :ok, location: @ticket
+  rescue StandardError
+    error_message('Impossible state change')
+  end
+
+  def ticket_to_review
+    unless current_user.developer?
+      error_message('Only developers can change state to Waiting For Accept')
+      return
+    end
+    @ticket.review!
+    notify_manager_on_state_change
+    render :show, status: :ok, location: @ticket
+  rescue StandardError
+    error_message('Impossible state change')
+  end
+
+  def accept_ticket
+    unless current_user.manager?
+      error_message('Only managers can change state to Accepted')
+      return
+    end
+    @ticket.accept!
+    notify_worker_on_state_change
+    render :show, status: :ok, location: @ticket
+  rescue StandardError
+    error_message('Impossible state change')
+  end
+
+  def decline_ticket
+    unless current_user.manager?
+      error_message('Only managers can change state to Declined')
+      return
+    end
+    @ticket.decline!
+    notify_worker_on_state_change
+    render :show, status: :ok, location: @ticket
+  rescue StandardError
+    error_message('Impossible state change')
+  end
+
+  def finish_ticket
+    unless current_user.manager?
+      error_message('Only managers can change state to Done')
+      return
+    end
+    @ticket.finish!
+    notify_worker_on_state_change
+    render :show, status: :ok, location: @ticket
+  rescue StandardError
+    error_message('Impossible state change')
   end
 
   def change_worker
@@ -94,6 +170,18 @@ class TicketsController < ApplicationController
 
     TaskMailer.with(user: @ticket.worker.user, changes: @ticket.previous_changes, ticket: @ticket,
                     updater: current_user).task_changed_email.deliver_later
+  end
+
+  def notify_worker_on_state_change
+    return if @ticket.worker_id.nil?
+
+    StateChangeMailer.with(ticket: @ticket).notify_worker.deliver_later
+  end
+
+  def notify_manager_on_state_change
+    return if @ticket.creator_worker_id.nil?
+
+    StateChangeMailer.with(ticket: @ticket).notify_manager.deliver_later
   end
 
   def save_ticket

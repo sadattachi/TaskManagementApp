@@ -5,7 +5,7 @@ FactoryBot.define do
     title { 'test title' }
     description { 'test' }
     worker_id { 1 }
-    state { 'Done' }
+    state { 'done' }
     creator_worker_id { 1 }
   end
 
